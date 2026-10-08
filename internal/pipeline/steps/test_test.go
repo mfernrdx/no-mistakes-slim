@@ -1046,7 +1046,7 @@ func TestTestStep_FixMode_UsesFallbackSummaryWhenStructuredSummaryMalformed(t *t
 	}
 }
 
-func TestTestStep_FixMode_AgentWritesNewTests_ProceedsAutomatically(t *testing.T) {
+func TestTestStep_FixMode_AgentWritesNewTests_BlocksForRemoval(t *testing.T) {
 	t.Parallel()
 	dir, baseSHA, headSHA := setupGitRepo(t)
 
@@ -1068,10 +1068,10 @@ func TestTestStep_FixMode_AgentWritesNewTests_ProceedsAutomatically(t *testing.T
 	if err != nil {
 		t.Fatal(err)
 	}
-	// Issue #140: a passing test run whose only finding is an informational
-	// "new test file written by agent" note must not require approval.
-	if outcome.NeedsApproval {
-		t.Error("expected no approval for an informational new-test-file finding when tests pass")
+	// Agent-authored tests are not allowed: a new test file the agent wrote
+	// blocks the step and is auto-fixable (the fix round removes it).
+	if !outcome.NeedsApproval || !outcome.AutoFixable {
+		t.Errorf("expected agent-written test file to block as auto-fixable, got approval=%v autofix=%v", outcome.NeedsApproval, outcome.AutoFixable)
 	}
 	if callCount != 2 {
 		t.Errorf("expected 2 agent calls in fix mode (fix, then the unconditional evidence turn), got %d", callCount)
@@ -1083,8 +1083,8 @@ func TestTestStep_FixMode_AgentWritesNewTests_ProceedsAutomatically(t *testing.T
 	for _, item := range f.Items {
 		if strings.Contains(item.Description, "component.spec.tsx") {
 			foundTestFile = true
-			if item.Action != types.ActionNoOp {
-				t.Errorf("expected new-test-file finding action %q, got %q", types.ActionNoOp, item.Action)
+			if item.Action != types.ActionAutoFix || item.Severity != "warning" {
+				t.Errorf("expected new-test-file finding warning/%q, got %s/%q", types.ActionAutoFix, item.Severity, item.Action)
 			}
 		}
 	}
@@ -1175,8 +1175,8 @@ func TestTestStep_UserIntentRunsConfiguredCommandThenEvidenceAgent(t *testing.T)
 		"Write new evidence files into this evidence directory, never into the worktree:",
 		sctx.EvidenceDir,
 		"Do not move, commit, or modify source files only to make evidence linkable",
-		"if no existing check drives a scenario, write or improve a focused test",
-		"perform manual verification with evidence",
+		"if no existing check drives a scenario, perform manual verification against the running product",
+		"perform manual verification against the running product with evidence",
 		"Always include an \"artifacts\" array",
 		"If sufficient evidence is not possible, report a warning finding",
 		"When the blocker is a host capability or OS permission the agent's own process lacks",
@@ -1423,8 +1423,7 @@ func TestTestStep_InitialAgent_NoTargetedEvidenceRequiresHonestFinding(t *testin
 	prompt := ag.calls[0].Prompt
 	for _, want := range []string{
 		"Never treat \"do not run everything\" as permission to run nothing",
-		"write or improve a focused test",
-		"perform manual verification with evidence",
+		"perform manual verification against the running product with evidence",
 		"report a warning finding that sufficient targeted evidence is not possible",
 		"If sufficient evidence is not possible, report a warning finding",
 	} {

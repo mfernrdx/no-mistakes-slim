@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/kunchenguid/no-mistakes/internal/buildinfo"
@@ -76,6 +77,11 @@ func Run(ctx context.Context, stdout, stderr io.Writer, opts RunOptions) error {
 	u, err := defaultUpdater(stdout, stderr)
 	if err != nil {
 		return err
+	}
+	// Fork builds (mfernrdx/no-mistakes, no-agent-tests) must not be replaced
+	// by an upstream release, which would silently drop the fork's changes.
+	if strings.Contains(u.currentVersion, "-fork") && !opts.Force {
+		return fmt.Errorf("this is a fork build (%s); rebuild from github.com/mfernrdx/no-mistakes instead of updating, or pass --force to replace it with upstream", u.currentVersion)
 	}
 	u.includePrereleases = opts.Beta
 	u.assumeYes = opts.Yes

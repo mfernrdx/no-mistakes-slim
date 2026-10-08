@@ -84,6 +84,7 @@ Context:
 Rules:
 - Make the smallest correct root-cause fix.
 - Do not refactor beyond what is needed for that root-cause fix.
+- Never create new test files or add test cases. When a finding says an agent-written test file must be removed, delete that file.
 - If tests fail, determine whether the problem is a real product/code failure, a setup/environment problem you can fix, or a flaky/infrastructure issue.
 - Do NOT run linters, formatters, or static analysis tools.
 - Reproduce the specific failing case first (the exact test, package, script, or check named in the findings), then re-run only that focused verification after the fix.
@@ -226,7 +227,7 @@ Previous test findings to address:
 		configuredTestCommand += fmt.Sprintf("Baseline ran with %s. Declare these overrides in testing_summary.\n", declaration)
 	}
 	trustedRunbook := trustedTestInstructionsSection(sctx) + budgetCutGuidanceSection(sctx)
-	fallbackGuidance := `- Never treat "do not run everything" as permission to run nothing: if no existing check drives a scenario, write or improve a focused test, perform manual verification with evidence, or report a warning finding that sufficient targeted evidence is not possible.
+	fallbackGuidance := `- Never treat "do not run everything" as permission to run nothing: if no existing check drives a scenario, perform manual verification against the running product with evidence, or report a warning finding that sufficient targeted evidence is not possible.
 - If sufficient evidence is not possible, report a warning finding explaining what evidence is missing and why the user needs to decide what to do. When the blocker is a host capability or OS permission the agent's own process lacks (for example, the Screen Recording permission macOS requires to capture a native GUI application), name the specific capability or permission and how to grant it so the user can enable it and re-run, instead of retrying blindly or failing opaquely.`
 	if sctx.Run.VerificationPlan != nil {
 		fallbackGuidance = `- Never treat "do not run everything" as permission to run nothing: if no existing check drives a scenario, perform repeatable product verification and retain its artifact, or report the scenario untested with the missing capability and how to provide it.
@@ -322,21 +323,27 @@ Rules:
 
 	findings.Items = append(findings.Items, verdictFindings(findings)...)
 
-	needsApproval := hasBlockingFindings(findings.Items)
-	autoFixable := needsApproval
-
-	// Record any new test files the agent wrote as informational (no-op)
-	// findings. Their presence alone is not an actionable problem, so they
-	// must not force the test step into approval when tests pass (issue #140).
+	// Agents may not author tests on their own initiative (see
+	// testguidance.Rule). A new test file the agent wrote is a blocking
+	// finding: auto-fix removes it, unless the user's intent mentions tests,
+	// in which case a human decides whether the user asked for it.
 	newTests := mergeNewTestFiles(newTestsFromFix, detectNewTestFiles(ctx, sctx.WorkDir))
+	intentMentionsTests := strings.Contains(strings.ToLower(cleanedUserIntent(sctx)), "test")
 	for _, f := range newTests {
+		action := types.ActionAutoFix
+		if intentMentionsTests {
+			action = types.ActionAskUser
+		}
 		findings.Items = append(findings.Items, Finding{
-			Severity:    "info",
-			Action:      types.ActionNoOp,
+			Severity:    "warning",
+			Action:      action,
 			File:        f,
-			Description: fmt.Sprintf("new test file written by agent: %s", f),
+			Description: fmt.Sprintf("new test file written by agent: %s. Agent-authored tests are not allowed unless the user's intent specified them; remove this file.", f),
 		})
 	}
+
+	needsApproval := hasBlockingFindings(findings.Items)
+	autoFixable := needsApproval
 
 	findingsJSON, _ := json.Marshal(findings)
 	return &pipeline.StepOutcome{

@@ -6,6 +6,21 @@ package testguidance
 // concrete about source-content-only assertions and circular oracles so agents
 // cannot mistake implementation restatements for evidence of correct behavior.
 const Rule = `
+## No agent-authored tests
+
+Do not create new test files and do not add new test cases on your own
+initiative. Measured on real tasks, agent-written unit and integration tests did
+not raise success rates and cost extra time and tokens: the implementation and
+the test are both the agent's reading of the intent, so the test mostly restates
+the implementation instead of checking it.
+
+Prove behavior instead by running the tests that already exist and by driving
+the real product (CLI transcripts, API responses, rendered UI, persisted state).
+You may repair an existing test when it is objectively wrong for the stated
+intent. Write a new test only when the user's own intent or verification plan
+spells out the test cases to add; then implement exactly those cases. A
+missing-test finding is not actionable unless the user asked for those tests.
+
 ## Test-quality rule
 
 Never add a test whose only evidence is that it opens, reads, greps, parses, or
@@ -45,7 +60,9 @@ fail before the fix and pass after it.
 
 // ReviewerAction adds the review-only enforcement and scope boundary to Rule.
 const ReviewerAction = `
-Reviewer action: Flag every newly added source-content-only assertion. Require
+Reviewer action: Do not ask the author to add tests and do not report missing
+test coverage as a finding unless the user's intent asked for those tests.
+Flag every newly added source-content-only assertion. Require
 the author to remove or semantically refine a same-pattern test encountered
 directly within the accepted change's scope, but do not turn an ordinary change
 into an unrelated repository-wide cleanup.
