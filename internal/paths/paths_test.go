@@ -105,7 +105,7 @@ func TestNewDefault(t *testing.T) {
 		t.Fatal(err)
 	}
 	home, _ := os.UserHomeDir()
-	want := filepath.Join(home, ".no-mistakes")
+	want := filepath.Join(home, ".no-mistakes-slim")
 	if p.Root() != want {
 		t.Errorf("Root() = %q, want %q", p.Root(), want)
 	}

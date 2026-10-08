@@ -192,7 +192,7 @@ func TestInit(t *testing.T) {
 	}
 
 	// Verify no-mistakes remote was added to working repo.
-	url, err := gitpkg.GetRemoteURL(ctx, workDir, "no-mistakes")
+	url, err := gitpkg.GetRemoteURL(ctx, workDir, RemoteName)
 	if err != nil {
 		t.Fatalf("get remote url: %v", err)
 	}
@@ -964,7 +964,7 @@ func TestEject(t *testing.T) {
 	}
 
 	// Verify remote was removed.
-	_, err = gitpkg.GetRemoteURL(ctx, workDir, "no-mistakes")
+	_, err = gitpkg.GetRemoteURL(ctx, workDir, RemoteName)
 	if err == nil {
 		t.Error("expected no-mistakes remote to be removed")
 	}
@@ -1160,7 +1160,7 @@ func TestInit_PostReceiveSurvivesHooksPathPoisoning(t *testing.T) {
 
 	// Push to the gate. The bare repo's own core.hookspath must still
 	// resolve to its hooks dir so post-receive fires.
-	if out, err := exec.Command("git", "-C", workDir, "push", "no-mistakes", "HEAD:refs/heads/test-branch").CombinedOutput(); err != nil {
+	if out, err := exec.Command("git", "-C", workDir, "push", RemoteName, "HEAD:refs/heads/test-branch").CombinedOutput(); err != nil {
 		t.Fatalf("push: %v: %s", err, out)
 	}
 

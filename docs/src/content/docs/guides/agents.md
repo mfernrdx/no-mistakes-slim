@@ -8,10 +8,10 @@ It is not runner-free.
 Every validation run requires a supported native agent binary, the `agent: cursor` or `agent: devin` ACP alias, or an explicit `acp:<target>` through `acpx`.
 The default `agent: auto` setting picks the first supported native agent or ACP alias available on your system.
 
-The coding agent that calls `no-mistakes axi` drives approval gates, but it does not automatically become the pipeline agent that performs review, evidence testing, documentation, combined documentation-and-lint housekeeping, or fixes.
+The coding agent that calls `no-mistakes-slim axi` drives approval gates, but it does not automatically become the pipeline agent that performs review, evidence testing, documentation, combined documentation-and-lint housekeeping, or fixes.
 Those jobs run in the daemon's disposable worktree through the configured pipeline agent.
 A validation-step agent inspects, fixes, and returns only its assigned phase; delivery requirements in user intent remain acceptance context, but the outer executor alone performs the other validation, push, PR, and CI phases.
-If that step attempts pipeline control, no-mistakes returns `error.code: nested_gate_context`; the agent must return control to the outer executor, while read-only `no-mistakes axi status`, `no-mistakes axi logs`, help, and `no-mistakes doctor` remain available.
+If that step attempts pipeline control, no-mistakes returns `error.code: nested_gate_context`; the agent must return control to the outer executor, while read-only `no-mistakes-slim axi status`, `no-mistakes-slim axi logs`, help, and `no-mistakes-slim doctor` remain available.
 
 The agent is responsible for the parts of the gate that benefit from judgment:
 code review, evidence-oriented test validation, test or lint detection when you
@@ -87,7 +87,7 @@ agent: acp:gemini
 acpx_path: C:\path\to\acpx.exe
 ```
 
-Run `no-mistakes doctor` afterward and look for a successful `gate validation` line.
+Run `no-mistakes-slim doctor` afterward and look for a successful `gate validation` line.
 Doctor checks the global agent configuration; each run performs the authoritative check again after applying any trusted repository-level agent override.
 If the calling environment exposes neither a supported native CLI nor a working ACP target, it can still inspect and respond to existing AXI state, but it cannot start an honest validation gate by itself.
 
@@ -144,11 +144,11 @@ Use bare `/no-mistakes` to validate existing committed work.
 Use `/no-mistakes <task>` to have the agent first do the task, commit only that task's changes on a feature branch, then run the pipeline with the task text as `--intent`.
 In both modes, it resolves low-risk findings on its own and stops to relay anything that needs your decision.
 
-Grok Build is a pipeline runner, not a driving-skill target. `no-mistakes init` installs the `/no-mistakes` skill for Claude Code and agents that use the vendor-neutral `.agents` convention; the [`init` reference](/no-mistakes/reference/cli/#no-mistakes-init) owns its locations and supported consumers.
+Grok Build is a pipeline runner, not a driving-skill target. `no-mistakes-slim init` installs the `/no-mistakes` skill for Claude Code and agents that use the vendor-neutral `.agents` convention; the [`init` reference](/no-mistakes/reference/cli/#no-mistakes-init) owns its locations and supported consumers.
 If your home directory consolidates `.claude` and `.agents` with symlinks, `init` follows the links and keeps the skill reachable from both logical paths.
-Re-run `no-mistakes init` after an upgrade to refresh that skill, including overwriting stale `SKILL.md` content from an older binary.
+Re-run `no-mistakes-slim init` after an upgrade to refresh that skill, including overwriting stale `SKILL.md` content from an older binary.
 Older versions vendored the skill into each initialized repo's `.claude/skills` and `.agents/skills`; those copies are no longer needed, and `init` prints a notice when it finds one so you can remove it.
-The skill drives `no-mistakes axi`, a non-interactive command surface that prints TOON to stdout and progress to stderr.
+The skill drives `no-mistakes-slim axi`, a non-interactive command surface that prints TOON to stdout and progress to stderr.
 When CI is ready - either its registered checks are green or the trusted default-branch config declares [`no_ci: true`](/no-mistakes/reference/repo-config/#no_ci) with no registered checks - but the PR is still open, `axi run` and `axi respond` return `outcome: checks-passed` with a help line pointing at the PR instead of waiting for a human merge. An empty check result without that declaration is not ready; see the [CI step reference](/no-mistakes/reference/pipeline-steps/#ci) for the readiness rules.
 That is a successful agent stopping point: report that the PR is ready and ask the user to review and merge it.
 Successful outcomes also instruct the agent to summarize the run for the user.
@@ -157,39 +157,39 @@ When the pipeline applied fixes, successful outcomes include a `fixes` table lis
 If that PR later falls behind the default branch or hits a merge conflict - commonly because another PR merged first - the agent runs no command and must never hand-rebase.
 The CI monitor stays live in the background after checks pass, and when it sees an actual conflict it rebases onto the base, resolves it, revalidates from Review because rebasing cannot prove continuity with the reviewed head, and re-pushes the branch through Push, so no agent or user action is needed.
 A PR that is merely behind but still clean needs nothing either, since the platform merges it.
-The one exception is when that monitor is no longer running - the PR was closed, the run was aborted or superseded, it idle-timed-out, or its auto-fix attempts were exhausted - in which case see [`no-mistakes rerun`](/no-mistakes/reference/cli/#no-mistakes-rerun) for the restart conditions.
-The agent must not use `no-mistakes axi run` to refresh a still-active PR: after `checks-passed` it reattaches to the running monitor with HEAD unchanged and returns the monitor output without rebasing.
+The one exception is when that monitor is no longer running - the PR was closed, the run was aborted or superseded, it idle-timed-out, or its auto-fix attempts were exhausted - in which case see [`no-mistakes-slim rerun`](/no-mistakes/reference/cli/#no-mistakes-rerun) for the restart conditions.
+The agent must not use `no-mistakes-slim axi run` to refresh a still-active PR: after `checks-passed` it reattaches to the running monitor with HEAD unchanged and returns the monitor output without rebasing.
 
 In task-first mode, if the repo is on the default branch, the skill tells the agent to create a feature branch before committing because the gate validates committed history on a non-default branch.
 The agent should inspect `git status` before changing or committing anything, preserve unrelated pre-existing uncommitted changes, and commit only the changes that belong to the user's task.
 
-Agents can also call `no-mistakes axi` directly:
+Agents can also call `no-mistakes-slim axi` directly:
 
 ```sh
-no-mistakes axi run --intent "the user's goal"
-no-mistakes axi status
-no-mistakes axi sync --check
-no-mistakes axi sync
-no-mistakes axi sync --recover
-no-mistakes axi sync --adopt-published
-no-mistakes axi respond --action approve
-no-mistakes axi logs --step review --full
-no-mistakes axi abort
-no-mistakes axi abort --run <id>
+no-mistakes-slim axi run --intent "the user's goal"
+no-mistakes-slim axi status
+no-mistakes-slim axi sync --check
+no-mistakes-slim axi sync
+no-mistakes-slim axi sync --recover
+no-mistakes-slim axi sync --adopt-published
+no-mistakes-slim axi respond --action approve
+no-mistakes-slim axi logs --step review --full
+no-mistakes-slim axi abort
+no-mistakes-slim axi abort --run <id>
 ```
 
 Before any post-pipeline local commit or fresh run, read `branch_sync` and follow its exact `next_action.command`.
-A `sync` action runs `no-mistakes axi sync` first.
-A `recover_custody` action is ordinary `no-mistakes axi sync --recover` to take a still-available preserved head, or `no-mistakes axi sync --recover --keep-local` when that head is unavailable and you are discarding the missing commits, or when a bound archive preserves divergent later work while custody returns at the reported required head; never substitute one action for the other. See [`no-mistakes rerun`](/no-mistakes/reference/cli/#no-mistakes-rerun) for the alternative validation path and its refusal conditions.
-A `recover_remote_rewritten` action is exact `no-mistakes axi sync --recover` after a terminal run whose push target was force-rewritten outside the pipeline: it anchors the superseded pipeline head and rebinds only the recorded push binding to the re-verified live head, and refuses `--keep-local`, a target or live head that changes during recovery, an unanchorable head, and a merged or closed PR. See [`no-mistakes axi sync`](/no-mistakes/reference/cli/#no-mistakes-axi-sync).
-An `adopt_published` action is `no-mistakes axi sync --adopt-published`: it verifies the configured push target already has the exact rebased local head, then updates only the stale gate lane. A target mismatch or target change refuses without replacing that lane.
+A `sync` action runs `no-mistakes-slim axi sync` first.
+A `recover_custody` action is ordinary `no-mistakes-slim axi sync --recover` to take a still-available preserved head, or `no-mistakes-slim axi sync --recover --keep-local` when that head is unavailable and you are discarding the missing commits, or when a bound archive preserves divergent later work while custody returns at the reported required head; never substitute one action for the other. See [`no-mistakes-slim rerun`](/no-mistakes/reference/cli/#no-mistakes-rerun) for the alternative validation path and its refusal conditions.
+A `recover_remote_rewritten` action is exact `no-mistakes-slim axi sync --recover` after a terminal run whose push target was force-rewritten outside the pipeline: it anchors the superseded pipeline head and rebinds only the recorded push binding to the re-verified live head, and refuses `--keep-local`, a target or live head that changes during recovery, an unanchorable head, and a merged or closed PR. See [`no-mistakes-slim axi sync`](/no-mistakes/reference/cli/#no-mistakes-axi-sync).
+An `adopt_published` action is `no-mistakes-slim axi sync --adopt-published`: it verifies the configured push target already has the exact rebased local head, then updates only the stale gate lane. A target mismatch or target change refuses without replacing that lane.
 A `branch_sync.state` of `user_owned` means the run went terminal before changing the submitted head and cancellation released the branch: it is immediately usable and needs no sync action.
 When `next_action.code` is `continue_active_run`, run the reported command and keep driving the active run.
 If synchronization is blocked, process that state instead of improvising reset, stash, merge, rebase, force, or branch replacement.
 Then commit follow-up work on top so every pipeline fix commit remains in the branch.
 
 The full driving protocol - how to read the home view and `gate:` objects, when to respond, fix, approve, or relay `ask-user` findings, and how to interpret `axi status` fields like `awaiting_agent` and `active_steps` - is owned by the skill itself and by the live `axi` output.
-Each `axi` response carries version-matched `help` lines for its state, and `no-mistakes axi run --help` and `no-mistakes axi respond --help` describe the loop authoritatively for the installed binary, so agents driving a gate never need this page open.
+Each `axi` response carries version-matched `help` lines for its state, and `no-mistakes-slim axi run --help` and `no-mistakes-slim axi respond --help` describe the loop authoritatively for the installed binary, so agents driving a gate never need this page open.
 The [CLI reference](/no-mistakes/reference/cli/) documents each `axi` command and output field for humans.
 
 ## Binary resolution
@@ -348,10 +348,10 @@ Devin starts each session in its `accept-edits` mode. Read-only commands run wit
 
 ## Checking agent availability
 
-Run `no-mistakes doctor` to inspect individual native and ACP runner binaries and to check the effective global agent configuration:
+Run `no-mistakes-slim doctor` to inspect individual native and ACP runner binaries and to check the effective global agent configuration:
 
 ```
-$ no-mistakes doctor
+$ no-mistakes-slim doctor
   ✓ git
   ✓ gh
   ✓ data directory

@@ -35,13 +35,13 @@ func guardGateControl(cmd *cobra.Command) error {
 func mutatesPipelineControl(cmd *cobra.Command) bool {
 	path := cmd.CommandPath()
 	switch path {
-	case "no-mistakes", "no-mistakes-slim init", "no-mistakes-slim eject", "no-mistakes-slim rerun",
+	case "no-mistakes-slim", "no-mistakes-slim init", "no-mistakes-slim eject", "no-mistakes-slim rerun",
 		"no-mistakes-slim axi run", "no-mistakes-slim axi respond", "no-mistakes-slim axi abort",
 		"no-mistakes-slim daemon start", "no-mistakes-slim daemon stop", "no-mistakes-slim daemon restart",
 		"no-mistakes-slim daemon uninstall",
 		"no-mistakes-slim update":
 		return true
-	case "no-mistakes sync", "no-mistakes-slim axi sync":
+	case "no-mistakes-slim sync", "no-mistakes-slim axi sync":
 		check, err := cmd.Flags().GetBool("check")
 		return err != nil || !check
 	default:
