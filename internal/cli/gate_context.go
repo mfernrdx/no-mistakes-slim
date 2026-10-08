@@ -35,13 +35,13 @@ func guardGateControl(cmd *cobra.Command) error {
 func mutatesPipelineControl(cmd *cobra.Command) bool {
 	path := cmd.CommandPath()
 	switch path {
-	case "no-mistakes", "no-mistakes init", "no-mistakes eject", "no-mistakes rerun",
-		"no-mistakes axi run", "no-mistakes axi respond", "no-mistakes axi abort",
-		"no-mistakes daemon start", "no-mistakes daemon stop", "no-mistakes daemon restart",
-		"no-mistakes daemon uninstall",
-		"no-mistakes update":
+	case "no-mistakes", "no-mistakes-slim init", "no-mistakes-slim eject", "no-mistakes-slim rerun",
+		"no-mistakes-slim axi run", "no-mistakes-slim axi respond", "no-mistakes-slim axi abort",
+		"no-mistakes-slim daemon start", "no-mistakes-slim daemon stop", "no-mistakes-slim daemon restart",
+		"no-mistakes-slim daemon uninstall",
+		"no-mistakes-slim update":
 		return true
-	case "no-mistakes sync", "no-mistakes axi sync":
+	case "no-mistakes sync", "no-mistakes-slim axi sync":
 		check, err := cmd.Flags().GetBool("check")
 		return err != nil || !check
 	default:
@@ -112,10 +112,10 @@ func emitGateContextRefusal(cmd *cobra.Command, result gatecontext.Result) error
 	if result.Phase != "" {
 		errorFields = append(errorFields, toon.Field{Key: "phase", Value: string(result.Phase)})
 	}
-	allowed := []string{"no-mistakes axi status", "no-mistakes axi logs --step <phase>", "no-mistakes doctor"}
+	allowed := []string{"no-mistakes-slim axi status", "no-mistakes-slim axi logs --step <phase>", "no-mistakes-slim doctor"}
 	if result.RunID != "" {
-		allowed[0] = "no-mistakes axi status --run " + result.RunID
-		allowed[1] = "no-mistakes axi logs --run " + result.RunID + " --step <phase>"
+		allowed[0] = "no-mistakes-slim axi status --run " + result.RunID
+		allowed[1] = "no-mistakes-slim axi logs --run " + result.RunID + " --step <phase>"
 	}
 	emitDoc(cmd,
 		toon.Field{Key: "error", Value: toon.NewObject(errorFields...)},

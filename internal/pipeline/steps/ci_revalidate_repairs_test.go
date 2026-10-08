@@ -300,7 +300,7 @@ func TestCIStep_AgentCommittedRepairFollowsThePolicy(t *testing.T) {
 // binding, and the recorded head either all land or none of them are recorded.
 // A gate-mirror failure happens after the remote already carries the head, so
 // the tempting shortcut is to record the publication anyway. Recording it would
-// leave the gate behind the remote, where `no-mistakes rerun` resolves the
+// leave the gate behind the remote, where `no-mistakes-slim rerun` resolves the
 // stale gate head and silently omits the repair.
 //
 // Nothing is recorded until every part succeeds, so the failure is simply

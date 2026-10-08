@@ -23,7 +23,7 @@ const preservedPreReceiveHook = "pre-receive.no-mistakes-user"
 func PreReceiveHookScript() string {
 	exe, err := os.Executable()
 	if err != nil {
-		exe = "no-mistakes"
+		exe = "no-mistakes-slim"
 	}
 	return preReceiveHookScript(exe)
 }
@@ -125,7 +125,7 @@ func RefreshManagedGateHooks(bareDir string) error {
 func PostReceiveHookScript() string {
 	exe, err := os.Executable()
 	if err != nil {
-		exe = "no-mistakes"
+		exe = "no-mistakes-slim"
 	}
 	return postReceiveHookScript(exe)
 }

@@ -9,25 +9,25 @@ import (
 )
 
 // Paths provides access to all no-mistakes filesystem locations.
-// The root defaults to ~/.no-mistakes but can be overridden via NM_HOME
+// The root defaults to ~/.no-mistakes-slim but can be overridden via NM_HOME
 // or by using WithRoot (for testing).
 type Paths struct {
 	root string
 }
 
-// New returns Paths rooted at NM_HOME or ~/.no-mistakes.
+// New returns Paths rooted at NM_HOME or ~/.no-mistakes-slim.
 func New() (*Paths, error) {
 	if env := os.Getenv("NM_HOME"); env != "" {
 		return &Paths{root: env}, nil
 	}
 	if testing.Testing() && os.Getenv("NO_MISTAKES_ALLOW_DEFAULT_ROOT_IN_TESTS") != "1" {
-		return nil, fmt.Errorf("NM_HOME must be set under go test to avoid touching the real no-mistakes daemon root")
+		return nil, fmt.Errorf("NM_HOME must be set under go test to avoid touching the real no-mistakes-slim daemon root")
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return nil, err
 	}
-	return &Paths{root: filepath.Join(home, ".no-mistakes")}, nil
+	return &Paths{root: filepath.Join(home, ".no-mistakes-slim")}, nil
 }
 
 // ForGate returns Paths rooted at the home that owns a managed gate.

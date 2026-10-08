@@ -12,7 +12,7 @@ import (
 
 // ErrSingletonLockHeld is returned by acquireSingletonLock when another live
 // process already holds the lock for the same NM_HOME.
-var ErrSingletonLockHeld = errors.New("a no-mistakes daemon is already running for this NM_HOME")
+var ErrSingletonLockHeld = errors.New("a no-mistakes-slim daemon is already running for this NM_HOME")
 
 const singletonLockRetry = 250 * time.Millisecond
 

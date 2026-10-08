@@ -32,7 +32,7 @@ var (
 func newDaemonCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "daemon",
-		Short: "Manage the no-mistakes daemon",
+		Short: "Manage the no-mistakes-slim daemon",
 	}
 
 	cmd.AddCommand(newDaemonStartCmd())
@@ -408,7 +408,7 @@ func probeDaemonOmitIntent(client *ipc.Client) error {
 		err = errors.New("daemon declined the omit-intent capability")
 	}
 	if err != nil {
-		return fmt.Errorf("the running daemon is too old to honor --no-publish-intent (%v); restart it with `no-mistakes daemon restart` so the current binary serves it", err)
+		return fmt.Errorf("the running daemon is too old to honor --no-publish-intent (%v); restart it with `no-mistakes-slim daemon restart` so the current binary serves it", err)
 	}
 	return nil
 }
@@ -578,7 +578,7 @@ func newDaemonStopCmd() *cobra.Command {
 				}
 				fmt.Fprintf(cmd.OutOrStdout(), "  %s daemon stopped\n", sGreen.Render("✓"))
 				if path := daemonLaunchAgentPathFn(p); path != "" {
-					fmt.Fprintf(cmd.OutOrStdout(), "  Service starts again at the next login; LaunchAgent remains at %s. Remove it with `no-mistakes daemon uninstall`.\n", path)
+					fmt.Fprintf(cmd.OutOrStdout(), "  Service starts again at the next login; LaunchAgent remains at %s. Remove it with `no-mistakes-slim daemon uninstall`.\n", path)
 				}
 				return nil
 			})

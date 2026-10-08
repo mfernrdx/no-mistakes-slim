@@ -956,7 +956,7 @@ func EnsureDaemon(p *paths.Paths) error {
 	}
 	alive, err := daemonHealthCheck(p)
 	if err != nil {
-		return fmt.Errorf("%w (run 'no-mistakes daemon start' to recover)", err)
+		return fmt.Errorf("%w (run 'no-mistakes-slim daemon start' to recover)", err)
 	}
 	if alive {
 		return nil

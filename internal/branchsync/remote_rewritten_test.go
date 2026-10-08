@@ -47,7 +47,7 @@ func TestRefreshOffersRecoveryForTerminalRunWithRewrittenRemote(t *testing.T) {
 	if state.Remote.ObservedHead != rewritten || state.Pipeline.PushedHead != f.pushed {
 		t.Fatalf("remote = %#v pipeline = %#v", state.Remote, state.Pipeline)
 	}
-	if state.NextAction == nil || state.NextAction.Code != "recover_remote_rewritten" || state.NextAction.Command != "no-mistakes axi sync --recover" {
+	if state.NextAction == nil || state.NextAction.Code != "recover_remote_rewritten" || state.NextAction.Command != "no-mistakes-slim axi sync --recover" {
 		t.Fatalf("terminal rewritten remote must offer the explicit recovery, got next action %#v", state.NextAction)
 	}
 }
@@ -63,7 +63,7 @@ func TestRefreshKeepsActiveRunInChargeOfRewrittenRemote(t *testing.T) {
 	if state.State != StateRemoteRewritten || state.Safety != "blocked_remote_rewritten" {
 		t.Fatalf("state = %#v", state)
 	}
-	if state.NextAction == nil || state.NextAction.Code != "continue_active_run" || state.NextAction.Command != "no-mistakes axi status" {
+	if state.NextAction == nil || state.NextAction.Code != "continue_active_run" || state.NextAction.Command != "no-mistakes-slim axi status" {
 		t.Fatalf("active run must keep ownership, got next action %#v", state.NextAction)
 	}
 }

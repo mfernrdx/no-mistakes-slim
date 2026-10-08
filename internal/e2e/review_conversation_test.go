@@ -17,7 +17,7 @@ import (
 )
 
 // The question the fake reviewer asks mid-pass, and the answer the operator
-// sends back with `no-mistakes axi answer`.
+// sends back with `no-mistakes-slim axi answer`.
 const (
 	conversationQuestionText = "Should the new flag default to off for existing installations?"
 	conversationAnswerText   = "default off"
@@ -116,7 +116,7 @@ func reviewConversationScenario(t *testing.T) string {
 // conversation as an operator experiences it: a maintainer turns
 // `review.conversation` on in the trusted default-branch config, the reviewer
 // asks a question while it reviews, the run parks for a human answer,
-// `no-mistakes axi answer` settles it, and the same reviewer finishes its pass.
+// `no-mistakes-slim axi answer` settles it, and the same reviewer finishes its pass.
 //
 // It also drives the two boundaries the feature is only safe with. `--yes` must
 // stand aside at an open question instead of handing it to the fixer, and
@@ -179,7 +179,7 @@ func TestReviewConversationJourney(t *testing.T) {
 		"question-q1",
 		conversationQuestionText,
 		"default off",
-		"no-mistakes axi answer --question",
+		"no-mistakes-slim axi answer --question",
 	} {
 		if !strings.Contains(statusOut, want) {
 			t.Errorf("axi status at the question gate does not show %q:\n%s", want, statusOut)

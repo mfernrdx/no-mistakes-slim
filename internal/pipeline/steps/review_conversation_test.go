@@ -968,7 +968,7 @@ func TestUnreadableQuestionHistoryParksEvenWithNothingOpen(t *testing.T) {
 // TestUnreadableQuestionHistoryReplacesTheAnswerableRows covers the other half
 // of that condition, and it is the one an appending reviewer actually reaches:
 // the line cap drops a question line while the retained window still holds open
-// questions. Every "question-<id>" row ends in "Answer it with: no-mistakes axi
+// questions. Every "question-<id>" row ends in "Answer it with: no-mistakes-slim axi
 // answer --question <id>", and RunManager.HandleAnswerReviewQuestion refuses
 // every answer for a conversation whose history is incomplete, so each row
 // instructed a command guaranteed to fail. One marker replaces them all, and it

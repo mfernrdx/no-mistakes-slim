@@ -18,7 +18,7 @@ import (
 // TestWorktreeRootJourney walks the whole worktree_roots feature the way an
 // operator reaches it, with nothing about the placement stubbed:
 //
-//   - `no-mistakes init --worktree-root <dir>` refuses the directories the
+//   - `no-mistakes-slim init --worktree-root <dir>` refuses the directories the
 //     daemon refuses to start on, so the entry it prints is one that can be
 //     pasted.
 //   - the entry it prints is pasted into the real global config verbatim, and
@@ -73,7 +73,7 @@ func TestWorktreeRootJourney(t *testing.T) {
 	if err != nil {
 		t.Fatalf("nm init --worktree-root: %v\n%s", err, initOut)
 	}
-	t.Logf("--- no-mistakes init --worktree-root %s ---\n%s", runsRoot, initOut)
+	t.Logf("--- no-mistakes-slim init --worktree-root %s ---\n%s", runsRoot, initOut)
 	entryLine := worktreeRootEntryFromGuidance(t, initOut, runsRoot)
 
 	// 3. The operator pastes it. The config is hand-maintained, so this is

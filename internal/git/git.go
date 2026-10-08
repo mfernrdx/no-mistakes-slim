@@ -569,7 +569,7 @@ func PushCommitWithOptions(ctx context.Context, dir, remote, commitSHA, ref, exp
 
 // PushCommitWithOptionsSkippingHooks is PushCommitWithOptions for an internal
 // control-plane push that must not invoke the repository's pre-push hook. Use
-// it only for a local no-mistakes gate trigger; delivery pushes keep the
+// it only for a local no-mistakes-slim gate trigger; delivery pushes keep the
 // repository hook.
 func PushCommitWithOptionsSkippingHooks(ctx context.Context, dir, remote, commitSHA, ref, expectedSHA string, forceWithLease bool, pushOptions []string) error {
 	return pushSourceWithOptions(ctx, dir, remote, commitSHA, ref, expectedSHA, forceWithLease, pushOptions, true)
@@ -582,7 +582,7 @@ func PushWithOptions(ctx context.Context, dir, remote, ref, expectedSHA string, 
 
 // PushWithOptionsSkippingHooks is PushWithOptions for an internal control-plane
 // push that must not invoke the repository's pre-push hook. Use it only for a
-// local no-mistakes gate trigger; delivery pushes keep the repository hook.
+// local no-mistakes-slim gate trigger; delivery pushes keep the repository hook.
 func PushWithOptionsSkippingHooks(ctx context.Context, dir, remote, ref, expectedSHA string, forceWithLease bool, pushOptions []string) error {
 	return pushSourceWithOptions(ctx, dir, remote, "HEAD", ref, expectedSHA, forceWithLease, pushOptions, true)
 }

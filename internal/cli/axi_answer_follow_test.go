@@ -243,10 +243,10 @@ func TestAxiAnswer_LastAnswerWaitElapsedReattachesWithoutAnsweringAgain(t *testi
 
 	out, err := executeCmd("axi", "answer", "--question", "q1", "--answer", "Keep it", "--wait", "1s")
 	assertWaitElapsed(t, err, out, "1s")
-	if !strings.Contains(out, "Re-run `no-mistakes axi run`") {
+	if !strings.Contains(out, "Re-run `no-mistakes-slim axi run`") {
 		t.Fatalf("post-answer timeout did not provide a non-mutating reattach command:\n%s", out)
 	}
-	if strings.Contains(out, "Re-run `no-mistakes axi answer") {
+	if strings.Contains(out, "Re-run `no-mistakes-slim axi answer") {
 		t.Fatalf("post-answer timeout instructed the caller to answer again:\n%s", out)
 	}
 }

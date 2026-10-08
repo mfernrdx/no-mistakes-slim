@@ -66,7 +66,7 @@ func TestInitIsIdempotent(t *testing.T) {
 }
 
 // TestInitLegacyNotice proves init in a repo that still carries a vendored
-// skill copy from an older no-mistakes version points it out without touching
+// skill copy from an older no-mistakes-slim version points it out without touching
 // it: the copy is the user's to remove, possibly via their VCS.
 //
 // The test name is deliberately short for the same socket path length reason
@@ -149,7 +149,7 @@ func TestInitRepoRename(t *testing.T) {
 }
 
 // TestInitInSubmoduleRegistersSubmoduleOwnOrigin reproduces issue #328:
-// `no-mistakes init` from inside a Git submodule checkout must register the
+// `no-mistakes-slim init` from inside a Git submodule checkout must register the
 // gate against the submodule's own origin, not the superproject's. Before the
 // fix, FindMainRepoRoot took the parent of --git-common-dir, which for an
 // absorbed submodule is <super>/.git/modules/<name>. The gate then read its

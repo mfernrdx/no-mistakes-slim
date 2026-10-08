@@ -379,9 +379,9 @@ func (s *Service) Refresh(ctx context.Context) State {
 			if state.PRState == "merged" || state.PRState == "closed" {
 				state.NextAction = nil
 			} else if terminalRunStatus(freshRun.Status) {
-				state.NextAction = &NextAction{Code: "recover_remote_rewritten", Command: "no-mistakes axi sync --recover"}
+				state.NextAction = &NextAction{Code: "recover_remote_rewritten", Command: "no-mistakes-slim axi sync --recover"}
 			} else {
-				state.NextAction = &NextAction{Code: "continue_active_run", Command: "no-mistakes axi status"}
+				state.NextAction = &NextAction{Code: "continue_active_run", Command: "no-mistakes-slim axi status"}
 			}
 		}
 		return state
@@ -806,7 +806,7 @@ func (s *Service) Recover(ctx context.Context, keepLocal bool) State {
 		if !keepLocal {
 			blocked := blockedPlan(state, StatePipelineOwned, "blocked_recover_archive_requires_keep_local", fmt.Sprintf("the later pipeline head %s is preserved at %s, but it diverges from required head %s; run only the offered keep-local custody recovery; no files or refs were changed", preserved, source.archive.ArchiveRef, source.archive.RequiredHeadSHA))
 			blocked.Recovery = source.evidence
-			blocked.NextAction = &NextAction{Code: "recover_custody", Command: "no-mistakes axi sync --recover --keep-local"}
+			blocked.NextAction = &NextAction{Code: "recover_custody", Command: "no-mistakes-slim axi sync --recover --keep-local"}
 			return blocked
 		}
 		if !gateAvailable {
@@ -913,7 +913,7 @@ func (s *Service) Recover(ctx context.Context, keepLocal bool) State {
 			return s.recoverAdoptPreserved(ctx, run, state, preserved, trustedEqualTreeRewrite)
 		}
 		state.Relation = RelationDiverged
-		blocked := blockedPlan(state, StatePipelineOwned, "blocked_recover_diverged", fmt.Sprintf("the local branch and the preserved pipeline head have diverged; the preserved commits are anchored at %s - reconcile manually and re-run the recovery, or use --keep-local to keep the current head. `no-mistakes rerun` resumes validating the selected preserved head, but refuses a known clean caller HEAD mismatch. If heads differ, inspect `no-mistakes axi status` and follow its exact `branch_sync.next_action.command` for custody or synchronization, then submit intended local commits with a fresh `no-mistakes axi run` once custody permits; no files or refs were changed", anchorRef))
+		blocked := blockedPlan(state, StatePipelineOwned, "blocked_recover_diverged", fmt.Sprintf("the local branch and the preserved pipeline head have diverged; the preserved commits are anchored at %s - reconcile manually and re-run the recovery, or use --keep-local to keep the current head. `no-mistakes-slim rerun` resumes validating the selected preserved head, but refuses a known clean caller HEAD mismatch. If heads differ, inspect `no-mistakes-slim axi status` and follow its exact `branch_sync.next_action.command` for custody or synchronization, then submit intended local commits with a fresh `no-mistakes-slim axi run` once custody permits; no files or refs were changed", anchorRef))
 		blocked.NextAction = &NextAction{Code: "inspect_and_reconcile_manually", Command: "git log --oneline --left-right HEAD..." + anchorRef}
 		return blocked
 	}
@@ -1339,7 +1339,7 @@ func (s *Service) recoverRemoteRewritten(ctx context.Context, run *db.Run, keepL
 	switch fresh.Safety {
 	case "blocked_offline", "blocked_remote_changed_during_refresh", "blocked_binding_changed":
 		blocked := blockedPlan(fresh, fresh.State, fresh.Safety, "the live push target could not be verified, so nothing was recovered; no files or refs were changed")
-		blocked.NextAction = &NextAction{Code: "retry", Command: "no-mistakes axi sync --recover"}
+		blocked.NextAction = &NextAction{Code: "retry", Command: "no-mistakes-slim axi sync --recover"}
 		return blocked, true
 	}
 	if fresh.Pipeline.RunID == run.ID && fresh.Remote.Freshness == "live" && fresh.Remote.ObservedHead != "" &&
@@ -1351,7 +1351,7 @@ func (s *Service) recoverRemoteRewritten(ctx context.Context, run *db.Run, keepL
 		return refuseUnverifiedPushBinding(fresh), true
 	}
 	if keepLocal {
-		return blockedPlan(fresh, StateRemoteRewritten, "blocked_recover_keep_local_not_applicable", "--keep-local does not apply to a remote rewritten outside the pipeline; run `no-mistakes axi sync --recover` to rebind the push binding to the verified live head; no files or refs were changed"), true
+		return blockedPlan(fresh, StateRemoteRewritten, "blocked_recover_keep_local_not_applicable", "--keep-local does not apply to a remote rewritten outside the pipeline; run `no-mistakes-slim axi sync --recover` to rebind the push binding to the verified live head; no files or refs were changed"), true
 	}
 	live := fresh.Remote.ObservedHead
 	superseded := fresh.Pipeline.PushedHead
@@ -1372,7 +1372,7 @@ func (s *Service) recoverRemoteRewritten(ctx context.Context, run *db.Run, keepL
 	again, err := s.runLsRemote(lsCtx, s.workDir(), repo.PushURL(), fresh.Target.Ref)
 	if err != nil || again != live {
 		blocked := blockedPlan(fresh, StateRemoteRewritten, "blocked_recover_remote_changed", fmt.Sprintf("the live remote changed again before the push binding could be rebound; the push binding was not changed and the superseded pipeline head stays anchored at %s", anchorRef))
-		blocked.NextAction = &NextAction{Code: "retry", Command: "no-mistakes axi sync --check"}
+		blocked.NextAction = &NextAction{Code: "retry", Command: "no-mistakes-slim axi sync --check"}
 		return blocked, true
 	}
 	recheck, _, ok := s.inspect(ctx)
@@ -1771,7 +1771,7 @@ func (s *Service) inspect(ctx context.Context) (State, *db.Run, bool) {
 		state.State = StatePushInProgress
 		state.Safety = "blocked_push_in_progress"
 		state.Pipeline.Phase = "push"
-		state.NextAction = &NextAction{Code: "continue_active_run", Command: "no-mistakes axi status"}
+		state.NextAction = &NextAction{Code: "continue_active_run", Command: "no-mistakes-slim axi status"}
 		return state, run, false
 	}
 	if run.LastPushedSHA == nil || run.PushTargetFingerprint == nil || run.PushRef == nil || run.PushGeneration == nil || run.SubmittedHeadSHA == nil {
@@ -1869,7 +1869,7 @@ func (s *Service) classifyRelation(ctx context.Context, state *State, pushed, ba
 			state.State = StateLocalAhead
 			state.Relation = RelationAhead
 			state.Safety = "blocked_local_ahead"
-			state.NextAction = &NextAction{Code: "run_pipeline", Command: `no-mistakes axi run --intent "<what the user set out to accomplish>"`}
+			state.NextAction = &NextAction{Code: "run_pipeline", Command: `no-mistakes-slim axi run --intent "<what the user set out to accomplish>"`}
 			return
 		default:
 			if equivalentDivergence(ctx, s.workDir(), state.Local.Head, pushed, base) {
@@ -1880,7 +1880,7 @@ func (s *Service) classifyRelation(ctx context.Context, state *State, pushed, ba
 				} else {
 					state.Safety = "refresh_required"
 				}
-				state.NextAction = &NextAction{Code: "sync", Command: "no-mistakes axi sync"}
+				state.NextAction = &NextAction{Code: "sync", Command: "no-mistakes-slim axi sync"}
 				state.Error = ""
 				return
 			}
@@ -1907,7 +1907,7 @@ func (s *Service) classifyRelation(ctx context.Context, state *State, pushed, ba
 	} else {
 		state.Safety = "refresh_required"
 	}
-	state.NextAction = &NextAction{Code: "sync", Command: "no-mistakes axi sync"}
+	state.NextAction = &NextAction{Code: "sync", Command: "no-mistakes-slim axi sync"}
 }
 
 func syncAnchorRef(runID string) string {
@@ -2105,12 +2105,12 @@ func (s *Service) classifyPipelineOwned(ctx context.Context, state *State, run *
 			if allEligible {
 				state.Safety = "blocked_recover_preserved_head_missing"
 				state.Error = "a stranded run's recorded pipeline head is not available in the invoking worktree or local gate; recover custody by keeping the current local head, which discards the missing preserved commits"
-				state.NextAction = &NextAction{Code: "recover_custody", Command: "no-mistakes axi sync --recover --keep-local"}
+				state.NextAction = &NextAction{Code: "recover_custody", Command: "no-mistakes-slim axi sync --recover --keep-local"}
 				return
 			}
 			state.Safety = "blocked_recover_manual_reconciliation"
 			state.Error = "a stranded run has missing, unverified, or conflicting recovery evidence; inspect and reconcile the recorded and live heads manually"
-			state.NextAction = &NextAction{Code: "inspect_and_reconcile_manually", Command: "no-mistakes axi status"}
+			state.NextAction = &NextAction{Code: "inspect_and_reconcile_manually", Command: "no-mistakes-slim axi status"}
 			return
 		}
 		source := s.recoverySourceAvailable(ctx, state, run)
@@ -2125,7 +2125,7 @@ func (s *Service) classifyPipelineOwned(ctx context.Context, state *State, run *
 			}
 			state.Safety = "blocked_recover_manual_reconciliation"
 			state.Error = "the run finished " + string(run.Status) + " but its preserved recovery evidence cannot be used safely; inspect and reconcile the recorded and live heads manually"
-			state.NextAction = &NextAction{Code: "inspect_and_reconcile_manually", Command: "no-mistakes axi status"}
+			state.NextAction = &NextAction{Code: "inspect_and_reconcile_manually", Command: "no-mistakes-slim axi status"}
 			return
 		}
 		state.Safety = "blocked_pipeline_owned_recoverable"
@@ -2141,7 +2141,7 @@ func (s *Service) classifyPipelineOwned(ctx context.Context, state *State, run *
 	}
 	state.Safety = "blocked_pipeline_owned"
 	state.Error = activeMessage
-	state.NextAction = &NextAction{Code: "continue_active_run", Command: "no-mistakes axi status"}
+	state.NextAction = &NextAction{Code: "continue_active_run", Command: "no-mistakes-slim axi status"}
 }
 
 type recoverySourceProof struct {
@@ -2165,7 +2165,7 @@ func (proof recoverySourceProof) apply(state State) State {
 		state.Error = "the terminal run's recorded pipeline head has no verified recovery source; inspect and reconcile the recorded and live heads manually; no files or refs were changed"
 	}
 	state.Recovery = proof.evidence
-	state.NextAction = &NextAction{Code: "inspect_and_reconcile_manually", Command: "no-mistakes axi status"}
+	state.NextAction = &NextAction{Code: "inspect_and_reconcile_manually", Command: "no-mistakes-slim axi status"}
 	return state
 }
 
@@ -2312,7 +2312,7 @@ func (s *Service) recoverySourceAvailable(ctx context.Context, state *State, run
 	if ordinaryAvailable {
 		return recoverySourceProof{
 			available: true,
-			action:    NextAction{Code: "recover_custody", Command: "no-mistakes axi sync --recover"},
+			action:    NextAction{Code: "recover_custody", Command: "no-mistakes-slim axi sync --recover"},
 		}
 	}
 	if archiveProof.available {
@@ -2463,7 +2463,7 @@ func (s *Service) verifyRecoveryArchiveRecord(ctx context.Context, state *State,
 	}
 
 	proof.available = true
-	proof.action = NextAction{Code: "recover_custody", Command: "no-mistakes axi sync --recover --keep-local"}
+	proof.action = NextAction{Code: "recover_custody", Command: "no-mistakes-slim axi sync --recover --keep-local"}
 	proof.evidence.Proof = "verified"
 	return proof
 }
@@ -2558,16 +2558,16 @@ func (s *Service) classifyCustodyReturned(ctx context.Context, state *State) {
 			gateHead, err := git.Run(ctx, s.GateDir, "rev-parse", branchRef+"^{commit}")
 			if err == nil && gateHead == state.Local.Head {
 				state.Safety = "gate_ready"
-				state.NextAction = &NextAction{Code: "run_pipeline", Command: `no-mistakes axi run --intent "<what the user set out to accomplish>"`}
+				state.NextAction = &NextAction{Code: "run_pipeline", Command: `no-mistakes-slim axi run --intent "<what the user set out to accomplish>"`}
 				return
 			}
 		}
 		state.Safety = "recovery_required"
-		state.NextAction = &NextAction{Code: "adopt_published", Command: "no-mistakes axi sync --adopt-published"}
+		state.NextAction = &NextAction{Code: "adopt_published", Command: "no-mistakes-slim axi sync --adopt-published"}
 		return
 	}
 	state.Safety = "custody_returned"
-	state.NextAction = &NextAction{Code: "run_pipeline", Command: `no-mistakes axi run --intent "<what the user set out to accomplish>"`}
+	state.NextAction = &NextAction{Code: "run_pipeline", Command: `no-mistakes-slim axi run --intent "<what the user set out to accomplish>"`}
 }
 
 // relationBetween classifies the local head against a target commit using only

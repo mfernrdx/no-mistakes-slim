@@ -6,7 +6,7 @@ import (
 )
 
 // GateRoleEnvVar is exported into every spawned gate agent's environment as an
-// coarse diagnostic marker that the process is a no-mistakes gate agent (a
+// coarse diagnostic marker that the process is a no-mistakes-slim gate agent (a
 // review/fix/document/test/lint/rebase/pr/ci invocation), NOT a fleet operator.
 // It is defense in depth only: it can be removed, forged, or inherited, so
 // runtime authorization uses canonical managed Git identity plus authenticated

@@ -74,7 +74,7 @@ func TestGateContextRefusalIsStructuredActionableAndPrivacySafe(t *testing.T) {
 		"run: run-safe",
 		"phase: document",
 		"enclosing executor owns validation, push, PR, and CI",
-		"no-mistakes axi status",
+		"no-mistakes-slim axi status",
 		"Return control to the outer executor",
 	} {
 		if !strings.Contains(text, want) {

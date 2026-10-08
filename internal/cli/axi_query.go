@@ -136,9 +136,9 @@ func emitNoRunForCaller(cmd *cobra.Command, env *axiEnv, branch string, runs []*
 	var help []string
 	switch {
 	case branch == "":
-		help = append(help, "This worktree has no current branch (detached HEAD), so no run can be attributed to it; inspect a specific run with `no-mistakes axi status --run <id>`, or check out a branch first")
+		help = append(help, "This worktree has no current branch (detached HEAD), so no run can be attributed to it; inspect a specific run with `no-mistakes-slim axi status --run <id>`, or check out a branch first")
 	case len(runs) > 0:
-		help = append(help, startRunHelp(), "No run exists for this branch; every run listed above is on another branch - inspect one deliberately with `no-mistakes axi status --run <id>`")
+		help = append(help, startRunHelp(), "No run exists for this branch; every run listed above is on another branch - inspect one deliberately with `no-mistakes-slim axi status --run <id>`")
 	default:
 		help = append(help, startRunHelp())
 	}
@@ -181,13 +181,13 @@ func configQuietWarning(env *axiEnv) time.Duration {
 }
 
 func startRunHelp() string {
-	return `Run no-mistakes axi run --intent "the user's goal" --yes to validate the current branch`
+	return `Run no-mistakes-slim axi run --intent "the user's goal" --yes to validate the current branch`
 }
 
 func noRunLogsHelp() []string {
 	return []string{
 		startRunHelp(),
-		"To read another branch's run, name it: `no-mistakes axi logs --run <id> --step <step>`",
+		"To read another branch's run, name it: `no-mistakes-slim axi logs --run <id> --step <step>`",
 	}
 }
 
@@ -215,7 +215,7 @@ func newAxiLogsCmd() *cobra.Command {
 // command gate emits tells the operator to read it with exactly this command,
 // so the gate names have to be accepted here.
 const validLogStepsHelp = "Valid steps: intent, rebase, review, test, document, lint, push, pr, ci, " +
-	"or a repository gate step name as shown in `no-mistakes axi status` (for example gate.test.mutation-budget)"
+	"or a repository gate step name as shown in `no-mistakes-slim axi status` (for example gate.test.mutation-budget)"
 
 // runAxiLogs renders a step log. It is a read-only query: it does not emit
 // telemetry.
@@ -250,7 +250,7 @@ func runAxiLogs(cmd *cobra.Command, step, runID string, full bool) error {
 		}
 		help := noRunLogsHelp()
 		if branch == "" {
-			help = []string{"This worktree has no current branch (detached HEAD), so no run can be attributed to it; inspect a specific run with `no-mistakes axi logs --run <id> --step <step>`, or check out a branch first"}
+			help = []string{"This worktree has no current branch (detached HEAD), so no run can be attributed to it; inspect a specific run with `no-mistakes-slim axi logs --run <id> --step <step>`, or check out a branch first"}
 		}
 		return emitError(cmd, 1, "no run found for this branch to read logs from",
 			help...)

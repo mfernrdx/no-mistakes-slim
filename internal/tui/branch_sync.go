@@ -28,7 +28,7 @@ func renderLocalBranchStatus(state *branchsync.State, refreshing bool, width int
 				}
 				footer = "u recover custody"
 			} else if state.NextAction != nil && state.NextAction.Code == "recover_custody" {
-				message = "Run ended without a recoverable preserved head. Keep the current local head and return custody with `no-mistakes axi sync --recover --keep-local`."
+				message = "Run ended without a recoverable preserved head. Keep the current local head and return custody with `no-mistakes-slim axi sync --recover --keep-local`."
 			} else {
 				message = "Local branch unchanged; the pipeline fix is not pushed yet. Do not make follow-up commits."
 			}

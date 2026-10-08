@@ -27,7 +27,7 @@ func TestMarkdownFrontmatter(t *testing.T) {
 	if strings.Count(md, "---\n") < 2 {
 		t.Errorf("frontmatter not closed with a second --- delimiter")
 	}
-	if !strings.Contains(md, "no-mistakes axi run") {
+	if !strings.Contains(md, "no-mistakes-slim axi run") {
 		t.Errorf("body should document the axi run command")
 	}
 	// The user-level install is a genuine user installation, so it must stay
@@ -45,7 +45,7 @@ func TestBodyIncludesGeneratedGateStepGuard(t *testing.T) {
 		"must inspect, fix, and return only its assigned phase",
 		"`error.code: nested_gate_context`",
 		"return control to the outer executor",
-		"`no-mistakes axi status`",
+		"`no-mistakes-slim axi status`",
 	} {
 		if !strings.Contains(md, want) {
 			t.Errorf("installed skill guard snapshot missing %q", want)
@@ -93,8 +93,8 @@ func TestBodyDocumentsIndependentTestOracles(t *testing.T) {
 func TestBodyDocumentsAxiGateGuidance(t *testing.T) {
 	md := Markdown()
 	for _, want := range []string{
-		"inspect it with `no-mistakes axi status`",
-		"drive it with `no-mistakes axi respond`",
+		"inspect it with `no-mistakes-slim axi status`",
+		"drive it with `no-mistakes-slim axi respond`",
 		"when it still matches your current `HEAD`",
 		"**Review auto-fix is disabled by default**",
 		"blocking and",
@@ -300,7 +300,7 @@ func TestInstallRejectsSymlinkCycle(t *testing.T) {
 }
 
 // TestVendored covers the legacy-detection helper init uses to tell users a
-// repo still carries a vendored skill copy from an older no-mistakes version.
+// repo still carries a vendored skill copy from an older no-mistakes-slim version.
 func TestVendored(t *testing.T) {
 	t.Run("clean_repo", func(t *testing.T) {
 		if got := Vendored(t.TempDir()); len(got) != 0 {

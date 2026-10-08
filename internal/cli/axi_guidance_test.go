@@ -21,23 +21,23 @@ import (
 // canonicalStaleMonitorPhrases are the load-bearing claims of the corrected
 // "PR fell behind / conflicted after checks pass" guidance: the live CI monitor
 // auto-rebases and re-pushes such a PR, so the agent runs no command and never
-// hand-rebases, and `no-mistakes rerun` is only the dead-monitor recovery,
+// hand-rebases, and `no-mistakes-slim rerun` is only the dead-monitor recovery,
 // subject to its clean caller-head check.
 var canonicalStaleMonitorPhrases = []string{
 	"never hand-rebase",
 	"revalidates from Review",
 	"cannot prove continuity with the reviewed head",
 	"re-pushes",
-	"no-mistakes rerun",
+	"no-mistakes-slim rerun",
 }
 
 var canonicalRerunRecoveryPhrases = []string{
 	"known clean caller",
 	"selected",
 	"refuses",
-	"no-mistakes axi status",
+	"no-mistakes-slim axi status",
 	"next_action.command",
-	"no-mistakes axi run",
+	"no-mistakes-slim axi run",
 	"custody",
 }
 
@@ -154,7 +154,7 @@ func TestBranchSyncGuidance_EmittedForBoundArchiveRecovery(t *testing.T) {
 	for _, want := range []string{
 		"branch_sync:",
 		"code: recover_custody",
-		"command: no-mistakes axi sync --recover --keep-local",
+		"command: no-mistakes-slim axi sync --recover --keep-local",
 		"bound archive preserves a divergent later head",
 		"custody returns at the reported required head",
 	} {

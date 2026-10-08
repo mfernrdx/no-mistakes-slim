@@ -26,8 +26,8 @@ func TestGateStepBoundaryWrapsEveryAgentInvocation(t *testing.T) {
 		t.Fatalf("run: %v", err)
 	}
 	for _, want := range []string{
-		"You are the document phase inside an already active no-mistakes run",
-		"Never invoke no-mistakes init, axi run, rerun, respond, sync, abort, eject",
+		"You are the document phase inside an already active no-mistakes-slim run",
+		"Never invoke no-mistakes-slim init, axi run, rerun, respond, sync, abort, eject",
 		"outer executor alone owns every phase other than this assigned one",
 		intent,
 	} {

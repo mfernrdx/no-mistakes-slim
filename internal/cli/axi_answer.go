@@ -45,7 +45,7 @@ func newAxiAnswerCmd() *cobra.Command {
 		Use:   "answer",
 		Short: "Answer a question the reviewer asked while reviewing",
 		Long: "Records an answer to one question the run's reviewer asked. Questions\n" +
-			"appear in `no-mistakes axi status` as the review gate's `question-<id>`\n" +
+			"appear in `no-mistakes-slim axi status` as the review gate's `question-<id>`\n" +
 			"findings, each carrying its id and the options the reviewer stated. When\n" +
 			"more questions are open than the gate renders as rows, the gate's\n" +
 			"omission notice names the remaining ids.\n\n" +
@@ -91,7 +91,7 @@ type answerArgs struct {
 func runAxiAnswer(cmd *cobra.Command, aa answerArgs) error {
 	if aa.questionID == "" || aa.answer == "" {
 		return emitError(cmd, 2, "--question and --answer are both required",
-			`Run `+"`no-mistakes axi status`"+` to list the reviewer's open questions and their ids`)
+			`Run `+"`no-mistakes-slim axi status`"+` to list the reviewer's open questions and their ids`)
 	}
 	if err := validateAxiWait(aa.wait); err != nil {
 		return emitError(cmd, 2, err.Error(), "Pass a positive duration such as --wait 8m")
@@ -114,7 +114,7 @@ func runAxiAnswer(cmd *cobra.Command, aa answerArgs) error {
 	}
 	if active.Run == nil {
 		return emitError(cmd, 1, "no active run to answer",
-			"A review question can only be answered while its run is still active; run `no-mistakes axi status` to check")
+			"A review question can only be answered while its run is still active; run `no-mistakes-slim axi status` to check")
 	}
 	runID := active.Run.ID
 	// The park this answer releases is identified before the answer is sent:
@@ -169,10 +169,10 @@ func runAxiAnswer(cmd *cobra.Command, aa answerArgs) error {
 		final, ciReady, err := followAnsweredReview(driveCtx, cmd.ErrOrStderr(), env.client, env.p.Socket(), runID, result.Resumed, preAnswer, grace)
 		if err != nil {
 			if isAxiWaitElapsed(ctx, driveCtx, err) {
-				return emitAxiWaitElapsed(cmd, aa.wait, "no-mistakes axi run")
+				return emitAxiWaitElapsed(cmd, aa.wait, "no-mistakes-slim axi run")
 			}
 			return emitError(cmd, 1, fmt.Sprintf("follow the resumed review: %v", err),
-				"The answer is recorded; run `no-mistakes axi run` to reattach to the run")
+				"The answer is recorded; run `no-mistakes-slim axi run` to reattach to the run")
 		}
 		// The run object that follows carries the id, so the scalar run key
 		// is dropped rather than emitted twice.
@@ -187,11 +187,11 @@ func runAxiAnswer(cmd *cobra.Command, aa answerArgs) error {
 	var help []string
 	switch {
 	case result.Open > 0:
-		help = append(help, "Answer the remaining questions with `no-mistakes axi answer --question <id> --answer \"...\"`; the review stays parked until none are open")
+		help = append(help, "Answer the remaining questions with `no-mistakes-slim axi answer --question <id> --answer \"...\"`; the review stays parked until none are open")
 	case result.Resumed:
-		help = append(help, "The reviewer is finishing its pass with your answers; run `no-mistakes axi status` for its findings and the next gate")
+		help = append(help, "The reviewer is finishing its pass with your answers; run `no-mistakes-slim axi status` for its findings and the next gate")
 	default:
-		help = append(help, "The answer is recorded and the reviewer will read it at its next checkpoint; run `no-mistakes axi status` to follow the run")
+		help = append(help, "The answer is recorded and the reviewer will read it at its next checkpoint; run `no-mistakes-slim axi status` to follow the run")
 	}
 	fields = append(fields, toon.Field{Key: "help", Value: help})
 	emitDoc(cmd, fields...)

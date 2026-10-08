@@ -27,7 +27,7 @@ func reviewQuestionGate(t *testing.T) stepView {
 				Description: "Review question awaiting an answer: Should the legacy /v1 route keep answering?" +
 					"\nOptions: Keep answering | Remove it" +
 					"\nArea: routing" +
-					"\nAnswer it with: no-mistakes axi answer --question q1 --answer \"<one of the options>\"",
+					"\nAnswer it with: no-mistakes-slim axi answer --question q1 --answer \"<one of the options>\"",
 			},
 		}, "1 issue and 1 open question"),
 	}
@@ -50,7 +50,7 @@ func TestReviewQuestionGate_LeadsWithAnswering(t *testing.T) {
 	for _, want := range []string{
 		"question-q1",
 		"Should the legacy /v1 route keep answering?",
-		"no-mistakes axi answer --question",
+		"no-mistakes-slim axi answer --question",
 		"Do not approve or fix to get past a review question",
 	} {
 		if !strings.Contains(got, want) {
@@ -60,7 +60,7 @@ func TestReviewQuestionGate_LeadsWithAnswering(t *testing.T) {
 
 	// The answering guidance must come before the approve/fix guidance, or an
 	// agent that acts on the first help line takes the wrong action.
-	answerAt := strings.Index(got, "no-mistakes axi answer --question")
+	answerAt := strings.Index(got, "no-mistakes-slim axi answer --question")
 	approveAt := strings.Index(got, "axi respond --action approve")
 	if answerAt < 0 || approveAt < 0 || answerAt > approveAt {
 		t.Fatalf("answering guidance must lead the review-question gate help:\n%s", got)

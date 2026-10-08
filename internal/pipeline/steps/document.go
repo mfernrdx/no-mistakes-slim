@@ -300,7 +300,7 @@ func repositoryDocumentPolicySection(sctx *pipeline.StepContext) string {
 	if instructions == "" {
 		return ""
 	}
-	return "\n\nMachine-local documentation ownership policy for this repository (from the operator's global no-mistakes config, not from this repository; augments the defaults above and cannot weaken them):\n" +
+	return "\n\nMachine-local documentation ownership policy for this repository (from the operator's global no-mistakes-slim config, not from this repository; augments the defaults above and cannot weaken them):\n" +
 		sanitizePromptMultilineText(instructions)
 }
 

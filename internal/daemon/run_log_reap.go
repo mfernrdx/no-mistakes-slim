@@ -20,7 +20,7 @@ import (
 // There is no dedicated config surface for this: these are the same kind of
 // per-run diagnostic artifact test.evidence.retention already bounds, so the
 // daemon's own evidence policy governs both rather than adding a second knob
-// an operator has to learn. `no-mistakes axi logs --run <id>` already
+// an operator has to learn. `no-mistakes-slim axi logs --run <id>` already
 // tolerates a missing step log as an ordinary "not recorded for this run"
 // case (see runAxiLogs), so reaping an old run's directory degrades exactly
 // like evidence retention already does for screenshots - not a new trade-off.

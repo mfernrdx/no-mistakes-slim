@@ -1216,7 +1216,7 @@ func TestExecutor_ReviewCarryForward_AnAnswerRoundDoesNotCarryItsOwnQuestions(t 
 			if round == 1 {
 				return &StepOutcome{
 					NeedsApproval:   true,
-					Findings:        `{"findings":[{"id":"review-1","severity":"warning","file":"service.go","line":10,"description":"PENDING ANSWER (q1): the legacy route is only wrong if /v1 is going","action":"ask-user"},{"id":"question-q1","severity":"warning","description":"Review question awaiting an answer: is /v1 going? Answer it with: no-mistakes axi answer --question q1 --answer ...","action":"ask-user","category":"review-question"}],"summary":"1 finding and a question"}`,
+					Findings:        `{"findings":[{"id":"review-1","severity":"warning","file":"service.go","line":10,"description":"PENDING ANSWER (q1): the legacy route is only wrong if /v1 is going","action":"ask-user"},{"id":"question-q1","severity":"warning","description":"Review question awaiting an answer: is /v1 going? Answer it with: no-mistakes-slim axi answer --question q1 --answer ...","action":"ask-user","category":"review-question"}],"summary":"1 finding and a question"}`,
 					ReviewedPaths:   []string{"service.go"},
 					ReviewablePaths: []string{"service.go"},
 				}, nil

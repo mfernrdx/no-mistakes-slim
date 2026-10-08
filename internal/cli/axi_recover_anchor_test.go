@@ -18,7 +18,7 @@ import (
 	"github.com/kunchenguid/no-mistakes/internal/types"
 )
 
-// Issue #1233 at the surface an operator actually hits: `no-mistakes axi run`
+// Issue #1233 at the surface an operator actually hits: `no-mistakes-slim axi run`
 // refuses to reconcile a private mirror holding private-only commits, and the
 // sanctioned recovery path that declares that chain preserved writes an anchor
 // reconciliation never consulted - so every recover -> rerun -> push iteration

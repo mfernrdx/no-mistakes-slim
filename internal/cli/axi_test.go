@@ -359,7 +359,7 @@ func TestGateHelpForUnvalidatedTestWorkDoesNotOfferSkip(t *testing.T) {
 	if strings.Contains(out, "--action skip") || strings.Contains(out, "--action approve") {
 		t.Fatalf("gate help offers a response that would publish unvalidated work:\n%s", out)
 	}
-	if !strings.Contains(out, "Do not skip this step") || !strings.Contains(out, "--action fix") || !strings.Contains(out, "`no-mistakes axi abort`") {
+	if !strings.Contains(out, "Do not skip this step") || !strings.Contains(out, "--action fix") || !strings.Contains(out, "`no-mistakes-slim axi abort`") {
 		t.Fatalf("gate help missing the skip warning, the fix path, or the real abort command:\n%s", out)
 	}
 }
@@ -381,7 +381,7 @@ func TestWriteGateShape(t *testing.T) {
 		"  summary: 1 blocking issue\n",
 		"  findings[1]{id,severity,file,action,description}:\n",
 		`    review-1,warning,main.go,ask-user,"calls os.Exit, leaks fd"`,
-		"no-mistakes axi respond --action approve",
+		"no-mistakes-slim axi respond --action approve",
 		"to have the pipeline fix the selected findings (do not edit files yourself)",
 		// Review gate carries the auto-fix-disabled note and the keep-driving
 		// reminder so an agent reads them at the point of use.
@@ -410,7 +410,7 @@ func TestRenderDriveResult_ProtectedPathGateHelp(t *testing.T) {
 				want: []string{
 					"explicit operator response", "Approve is rejected",
 					"operator inspect and resolve", "repository's authorized workflow",
-					"no-mistakes axi respond --action fix`", "retry the refused step",
+					"no-mistakes-slim axi respond --action fix`", "retry the refused step",
 					"including its commit and publication",
 				},
 				absent: []string{"--action approve", "do not edit files yourself"},
@@ -418,7 +418,7 @@ func TestRenderDriveResult_ProtectedPathGateHelp(t *testing.T) {
 			{
 				name:     "ordinary",
 				findings: findingsJSON(t, []types.Finding{{ID: "doc-1", Action: types.ActionAskUser, Description: "clarify documentation"}}, "Documentation decision"),
-				want:     []string{"no-mistakes axi respond --action approve", "--action fix --findings <ids>", "do not edit files yourself"},
+				want:     []string{"no-mistakes-slim axi respond --action approve", "--action fix --findings <ids>", "do not edit files yourself"},
 				absent:   []string{"protected-path", "Approve is rejected"},
 			},
 		} {
@@ -470,7 +470,7 @@ func TestGateSummaryUsesBoundedDisclosure(t *testing.T) {
 		!strings.Contains(out, fmt.Sprintf("truncated, %d chars total", len(summary))) {
 		t.Fatalf("gate status should disclose summary truncation:\n%s", out)
 	}
-	if !strings.Contains(out, "no-mistakes axi logs --step test --full") {
+	if !strings.Contains(out, "no-mistakes-slim axi logs --step test --full") {
 		t.Fatalf("truncated gate should point to the complete step log:\n%s", out)
 	}
 }
@@ -1030,7 +1030,7 @@ func TestAxiHomeStartsCurrentBranchWhenOtherBranchIsActive(t *testing.T) {
 		"current_branch: feature/current",
 		"other_branch_active_run:",
 		"branch: feature/other",
-		"no-mistakes axi run --intent",
+		"no-mistakes-slim axi run --intent",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("axi home missing %q in:\n%s", want, got)
@@ -1039,8 +1039,8 @@ func TestAxiHomeStartsCurrentBranchWhenOtherBranchIsActive(t *testing.T) {
 	for _, forbidden := range []string{
 		"\nactive_run:",
 		"gate:",
-		"no-mistakes axi respond --action approve",
-		"no-mistakes axi abort",
+		"no-mistakes-slim axi respond --action approve",
+		"no-mistakes-slim axi abort",
 	} {
 		if strings.Contains(got, forbidden) {
 			t.Fatalf("axi home should not tell the agent to act on another branch via %q, got:\n%s", forbidden, got)

@@ -38,7 +38,7 @@ type Harness struct {
 	NMHome      string // value used as $NM_HOME (daemon DB, socket, config)
 	HomeDir     string // value used as $HOME so git operations don't read user state
 	UpstreamDir string // bare repo serving as origin for the working clone
-	WorkDir     string // working clone where the user runs `no-mistakes init`
+	WorkDir     string // working clone where the user runs `no-mistakes-slim init`
 	AgentLog    string // every fake-agent invocation appended here, one JSON per line
 	Scenario    string // optional path to a scenario yaml; empty = built-in default
 

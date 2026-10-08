@@ -189,7 +189,7 @@ func TestClosingIssueRefsGitHubJourney(t *testing.T) {
 		if err == nil || !strings.Contains(out, "invalid --closes") {
 			t.Fatalf("--closes %q should be rejected, err=%v out:\n%s", bad, err, out)
 		}
-		saveEvidence(t, "01-invalid-closes.txt", "$ no-mistakes axi run --closes "+bad+"\n"+out)
+		saveEvidence(t, "01-invalid-closes.txt", "$ no-mistakes-slim axi run --closes "+bad+"\n"+out)
 	}
 	if runs := h.Runs(); len(runs) != 0 {
 		t.Fatalf("invalid --closes started %d run(s)", len(runs))
@@ -339,13 +339,13 @@ func TestClosingIssueRefsReattachAfterComposeIsRefused(t *testing.T) {
 	assertLinesOnce(t, "reattach base", livePRBody(t, statePath, branch), "Closes #95")
 
 	same, sameErr := h.RunInDir(wt, "axi", "run", "--intent", "reattach", "--closes", "95", "--wait", "5s")
-	saveEvidence(t, "08-reattach-same-ref.txt", "$ no-mistakes axi run --closes 95  # reattach, already recorded\n"+same)
+	saveEvidence(t, "08-reattach-same-ref.txt", "$ no-mistakes-slim axi run --closes 95  # reattach, already recorded\n"+same)
 	if strings.Contains(same, "already composed") {
 		t.Errorf("re-sending an already-recorded ref was refused: %v\n%s", sameErr, same)
 	}
 
 	added, addErr := h.RunInDir(wt, "axi", "run", "--intent", "reattach", "--closes", "77", "--wait", "5s")
-	saveEvidence(t, "09-reattach-new-ref.txt", "$ no-mistakes axi run --closes 77  # reattach after PR body composed\n"+added)
+	saveEvidence(t, "09-reattach-new-ref.txt", "$ no-mistakes-slim axi run --closes 77  # reattach after PR body composed\n"+added)
 	if addErr == nil || !strings.Contains(added, "already composed") || !strings.Contains(added, "NOT added") {
 		t.Errorf("new ref after compose should be refused explicitly, err=%v\n%s", addErr, added)
 	}
@@ -391,7 +391,7 @@ func TestClosingIssueRefsNonGitHubFailsAtPR(t *testing.T) {
 	out, _ := h.RunInDir(wt, "axi", "run", "--intent", "gitea closes", "--skip", "ci", "--closes", "5")
 	run := h.WaitForRun(branch, 3*time.Minute)
 	pr, _ := findStep(run.Steps, types.StepPR)
-	evidence := "$ no-mistakes axi run --closes 5   # origin is Gitea\n" + out + "\nrun status: " + string(run.Status) + "\npr step status: " + string(pr.Status) + "\npr step error: " + deref(pr.Error) + "\nrun error: " + deref(run.Error) + "\n"
+	evidence := "$ no-mistakes-slim axi run --closes 5   # origin is Gitea\n" + out + "\nrun status: " + string(run.Status) + "\npr step status: " + string(pr.Status) + "\npr step error: " + deref(pr.Error) + "\nrun error: " + deref(run.Error) + "\n"
 	saveEvidence(t, "10-gitea-closes.txt", evidence)
 	if run.Status == types.RunCompleted || pr.Status == types.StepStatusCompleted {
 		t.Fatalf("--closes on Gitea should fail the PR step; %s", evidence)

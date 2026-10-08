@@ -24,9 +24,9 @@ const ErrorCode = "nested_gate_context"
 func RefusalMessage(result Result) string {
 	target := "an active no-mistakes validation step"
 	if result.RunID != "" && result.Phase != "" {
-		target = fmt.Sprintf("no-mistakes run %s, phase %s", result.RunID, result.Phase)
+		target = fmt.Sprintf("no-mistakes-slim run %s, phase %s", result.RunID, result.Phase)
 	} else if result.RunID != "" {
-		target = "no-mistakes run " + result.RunID
+		target = "no-mistakes-slim run " + result.RunID
 	}
 	return fmt.Sprintf("%s: refusing pipeline control from %s; return control to the outer executor", ErrorCode, target)
 }

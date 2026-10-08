@@ -690,7 +690,7 @@ func TestPushReceivedConcurrentDifferentBranchRunsAvoidSharedConfigLock(t *testi
 	_, headSHA := setupTestGitRepo(t, p, d, repoID)
 
 	// Mirror a real gate: enable the per-worktree config isolation that
-	// `no-mistakes init` installs, which is what lets identity writes avoid the
+	// `no-mistakes-slim init` installs, which is what lets identity writes avoid the
 	// shared config.lock.
 	if err := git.IsolateHooksPath(context.Background(), p.RepoDir(repoID)); err != nil {
 		t.Fatalf("isolate hooks path: %v", err)

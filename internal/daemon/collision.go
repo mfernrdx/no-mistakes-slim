@@ -10,7 +10,7 @@ import (
 	"github.com/kunchenguid/no-mistakes/internal/paths"
 )
 
-// daemonProcessInfo describes a running `no-mistakes daemon run --root <root>`
+// daemonProcessInfo describes a running `no-mistakes-slim daemon run --root <root>`
 // process discovered via the OS process list.
 type daemonProcessInfo struct {
 	PID  int
@@ -31,7 +31,7 @@ var errDaemonCollisionHealthy = errors.New("daemon already running")
 type daemonProcessLineSplitter func(line string) (pid int, command string, ok bool)
 
 // parseDaemonProcessOutput walks a process listing and returns every line that
-// looks like `no-mistakes daemon run --root <root>`, extracting the pid and the
+// looks like `no-mistakes-slim daemon run --root <root>`, extracting the pid and the
 // raw --root value. The splitter normalizes each platform's output into a pid
 // plus the full command line.
 func parseDaemonProcessOutput(output string, split daemonProcessLineSplitter) []daemonProcessInfo {

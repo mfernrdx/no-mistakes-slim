@@ -1130,7 +1130,7 @@ func (m *RunManager) HandleRerun(ctx context.Context, repoID, branch, previousRu
 		return "", err
 	}
 	if callerHeadSHA != "" && callerHeadSHA != headSHA {
-		return "", fmt.Errorf("refusing rerun: selected head %s differs from clean local head %s; inspect `no-mistakes axi status` and reconcile custody before using `no-mistakes axi run` to submit the local head", headSHA, callerHeadSHA)
+		return "", fmt.Errorf("refusing rerun: selected head %s differs from clean local head %s; inspect `no-mistakes-slim axi status` and reconcile custody before using `no-mistakes-slim axi run` to submit the local head", headSHA, callerHeadSHA)
 	}
 	selectedRun := latestForBranch
 	if previousRunID != "" {
@@ -1214,10 +1214,10 @@ func resolveRerunHead(ctx context.Context, gateDir, branch string, latest *db.Ru
 	if refExists {
 		preserved, preserveErr := git.Run(ctx, gateDir, "rev-parse", recoveryRef+"^{commit}")
 		if preserveErr != nil {
-			return "", fmt.Errorf("refusing rerun: terminal recovery ref for run %s points at non-commit object %s; inspect with `no-mistakes axi status` and reconcile custody first", latest.ID, refTarget)
+			return "", fmt.Errorf("refusing rerun: terminal recovery ref for run %s points at non-commit object %s; inspect with `no-mistakes-slim axi status` and reconcile custody first", latest.ID, refTarget)
 		}
 		if preserved != latest.HeadSHA {
-			return "", fmt.Errorf("refusing rerun: terminal recovery ref for run %s points at %s, not recorded unpublished head %s; inspect with `no-mistakes axi status` and reconcile custody first", latest.ID, preserved, latest.HeadSHA)
+			return "", fmt.Errorf("refusing rerun: terminal recovery ref for run %s points at %s, not recorded unpublished head %s; inspect with `no-mistakes-slim axi status` and reconcile custody first", latest.ID, preserved, latest.HeadSHA)
 		}
 		return preserved, nil
 	}
@@ -1227,7 +1227,7 @@ func resolveRerunHead(ctx context.Context, gateDir, branch string, latest *db.Ru
 		}
 		return preserved, nil
 	}
-	return "", fmt.Errorf("refusing rerun from stale gate head %s: terminal run %s recorded unpublished head %s, but that head is unavailable; inspect with `no-mistakes axi status` and reconcile custody first", gateHead, latest.ID, latest.HeadSHA)
+	return "", fmt.Errorf("refusing rerun from stale gate head %s: terminal run %s recorded unpublished head %s, but that head is unavailable; inspect with `no-mistakes-slim axi status` and reconcile custody first", gateHead, latest.ID, latest.HeadSHA)
 }
 
 // fetchRunDefaultBranch fetches the trusted branch from the refreshed
@@ -2062,7 +2062,7 @@ func (m *RunManager) HandleAnswerReviewQuestion(runID, questionID, answer, answe
 	// answer that closed nothing, which reads fine, stays recorded and is
 	// deliberately not an error.
 	if before.QuestionsIncomplete {
-		return nil, fmt.Errorf("run %s's review question history could not be read to the end (%s), so an answer cannot be bound to the ask it settles; nothing was recorded - read that file for the questions asked, and resolve the parked review with `no-mistakes axi respond` instead", runID, filepath.Join(dir, reviewqa.QuestionsFile))
+		return nil, fmt.Errorf("run %s's review question history could not be read to the end (%s), so an answer cannot be bound to the ask it settles; nothing was recorded - read that file for the questions asked, and resolve the parked review with `no-mistakes-slim axi respond` instead", runID, filepath.Join(dir, reviewqa.QuestionsFile))
 	}
 	wasOpen := false
 	askOrdinal := 0

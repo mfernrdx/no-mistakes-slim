@@ -29,7 +29,7 @@ var resolveForkParent = func(ctx context.Context, remoteURL string) (parentSlug 
 // refuseForkOriginMisrouting detects the fork layout `gh repo fork --clone`
 // leaves behind - `origin` is the contributor's own fork and a separate
 // `upstream` remote already names the real parent repository - and refuses
-// loudly instead of letting a plain `no-mistakes init` (no --fork-url) treat
+// loudly instead of letting a plain `no-mistakes-slim init` (no --fork-url) treat
 // the fork as the parent (issue #1178). Left undetected, that layout opens
 // scratch PRs inside the contributor's fork and no attestation ever binds to
 // their real PR against the parent.
@@ -111,7 +111,7 @@ func refuseForkOriginMisrouting(ctx context.Context, absRoot string) error {
 			"otherwise it opens pull requests and binds pipeline attestations inside your own fork instead of %s.\n\n"+
 			"Fix:\n"+
 			"  git remote set-url origin %s\n"+
-			"  no-mistakes init --fork-url %s\n\n"+
+			"  no-mistakes-slim init --fork-url %s\n\n"+
 			"See CONTRIBUTING.md for the full fork workflow.",
 		originOwner, originName, parentSlug, parentSlug,
 		safeurl.Redact(upstreamRemoteURL), safeurl.Redact(originURL))

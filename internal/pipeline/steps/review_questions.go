@@ -434,7 +434,7 @@ func openReviewQuestionFindings(conv reviewqa.Conversation) []types.Finding {
 	open := conv.Open()
 	// An unreadable question history replaces the whole question channel for
 	// this gate, whatever remains open, because every "question-<id>" row ends
-	// in "Answer it with: no-mistakes axi answer --question <id>" and
+	// in "Answer it with: no-mistakes-slim axi answer --question <id>" and
 	// RunManager.HandleAnswerReviewQuestion refuses every answer for such a
 	// conversation before it appends. Emitting the rows would instruct a
 	// command guaranteed to fail.
@@ -493,7 +493,7 @@ func openReviewQuestionFindings(conv reviewqa.Conversation) []types.Finding {
 			b.WriteString("\nArea: ")
 			b.WriteString(e.Area)
 		}
-		b.WriteString("\nAnswer it with: no-mistakes axi answer --question ")
+		b.WriteString("\nAnswer it with: no-mistakes-slim axi answer --question ")
 		b.WriteString(e.ID)
 		b.WriteString(" --answer \"<one of the options>\"")
 		findings = append(findings, types.Finding{
@@ -525,7 +525,7 @@ func openReviewQuestionFindings(conv reviewqa.Conversation) []types.Finding {
 			ID:       "review-questions-omitted",
 			Severity: types.FindingSeverityWarning,
 			Description: boundReviewQuestionText(fmt.Sprintf(
-				"%d further review question(s) are open and have no row of their own. This gate releases only once EVERY open question is answered, so answer these by id as well, with: no-mistakes axi answer --question <id> --answer \"<your answer>\". Omitted question ids: %s",
+				"%d further review question(s) are open and have no row of their own. This gate releases only once EVERY open question is answered, so answer these by id as well, with: no-mistakes-slim axi answer --question <id> --answer \"<your answer>\". Omitted question ids: %s",
 				len(omittedIDs), strings.Join(omittedIDs, ", ")), maxReviewQuestionDescription),
 			Action:   types.ActionAskUser,
 			Category: types.FindingCategoryReviewQuestion,

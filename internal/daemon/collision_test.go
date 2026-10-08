@@ -50,7 +50,7 @@ func TestLooksLikeDaemonRunCommand(t *testing.T) {
 		{`/x/no-mistakes run daemon --root /a`, true}, // order-insensitive
 		{`/x/no-mistakes`, false},                     // detached: bare exe
 		{`postgres --root /a daemon`, false},          // missing "run"
-		{`no-mistakes daemon --root /a`, false},       // missing "run"
+		{`no-mistakes-slim daemon --root /a`, false},       // missing "run"
 		{``, false},
 	}
 	for _, tc := range tests {

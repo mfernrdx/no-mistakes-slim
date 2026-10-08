@@ -83,7 +83,7 @@ func emitAxiWaitElapsed(cmd *cobra.Command, wait time.Duration, reattach string,
 		toon.Field{Key: "error", Value: fmt.Sprintf("wait of %s elapsed while driving the run", wait)},
 		toon.Field{Key: "help", Value: []string{
 			"This bounded hold ended; it is not a pipeline failure and does not mean the daemon is dead.",
-			"Run `no-mistakes axi status` to inspect progress",
+			"Run `no-mistakes-slim axi status` to inspect progress",
 			fmt.Sprintf("Re-run `%s` to reattach for another %s", reattach, wait),
 		}},
 	)
@@ -337,7 +337,7 @@ func runAxiRunWithLaunchProof(cmd *cobra.Command, autoYes bool, skipSteps []type
 		active, err := activeRunInfo(driveCtx, env, branch, headSHA)
 		if err != nil {
 			if isAxiWaitElapsed(ctx, driveCtx, err) {
-				return emitAxiWaitElapsed(cmd, wait, "no-mistakes axi run")
+				return emitAxiWaitElapsed(cmd, wait, "no-mistakes-slim axi run")
 			}
 			return emitError(cmd, 1, fmt.Sprintf("get active run: %v", err))
 		}
@@ -450,7 +450,7 @@ func runAxiRunWithLaunchProof(cmd *cobra.Command, autoYes bool, skipSteps []type
 	run, ciReady, err := driveRun(driveCtx, cmd.ErrOrStderr(), env.client, env.p.Socket(), runID, autoYes)
 	if err != nil {
 		if isAxiWaitElapsed(ctx, driveCtx, err) {
-			return emitAxiWaitElapsed(cmd, wait, "no-mistakes axi run")
+			return emitAxiWaitElapsed(cmd, wait, "no-mistakes-slim axi run")
 		}
 		return emitError(cmd, 1, fmt.Sprintf("drive run: %v", err))
 	}
@@ -490,7 +490,7 @@ func requireDaemonHonorsClosingIssueRefs(client closingIssueRefsUpdateClient, re
 		err = errors.New("daemon declined the closing-reference capability")
 	}
 	if err != nil {
-		return fmt.Errorf("the running daemon is too old to honor --closes (%v); restart it with `no-mistakes daemon restart` so the current binary serves it", err)
+		return fmt.Errorf("the running daemon is too old to honor --closes (%v); restart it with `no-mistakes-slim daemon restart` so the current binary serves it", err)
 	}
 	return nil
 }
@@ -1092,7 +1092,7 @@ func driveRunWithReconciler(ctx context.Context, progress io.Writer, client *ipc
 			// review conversation is off, because a review-question finding
 			// cannot exist then.
 			if pipeline.HasUnansweredReviewQuestion(gate.FindingsJSON) {
-				fmt.Fprintf(progress, "%s: an open review question needs an explicit answer (no-mistakes axi answer --question <id> --answer \"...\"); --yes leaves this gate awaiting one\n", gate.Name)
+				fmt.Fprintf(progress, "%s: an open review question needs an explicit answer (no-mistakes-slim axi answer --question <id> --answer \"...\"); --yes leaves this gate awaiting one\n", gate.Name)
 				return run, false, nil
 			}
 			// The reviewer's question history could not be read in full, so
@@ -1271,7 +1271,7 @@ func (e *respondRefusalError) helpLines() []string {
 		help = append(help, e.help)
 	}
 	if len(help) == 0 {
-		help = append(help, "Run `no-mistakes axi status` to list the gate's finding IDs")
+		help = append(help, "Run `no-mistakes-slim axi status` to list the gate's finding IDs")
 	}
 	return help
 }
@@ -1508,7 +1508,7 @@ func runAxiRespond(cmd *cobra.Command, ra respondArgs) error {
 	case types.ActionApprove, types.ActionFix, types.ActionSkip:
 	case "":
 		return emitError(cmd, 2, "--action is required",
-			"Run `no-mistakes axi respond --action approve|fix|skip`")
+			"Run `no-mistakes-slim axi respond --action approve|fix|skip`")
 	default:
 		return emitError(cmd, 2, fmt.Sprintf("unknown action %q", ra.action),
 			"Valid actions: approve, fix, skip")
@@ -1528,20 +1528,20 @@ func runAxiRespond(cmd *cobra.Command, ra respondArgs) error {
 	source := &ipcRunStateSource{socketPath: env.p.Socket()}
 	if err := source.callWithSlowReplyRetry(driveCtx, ipc.MethodGetActiveRun, activeRunLookupParams(env.repo.ID, branch), &active); err != nil {
 		if isAxiWaitElapsed(ctx, driveCtx, err) {
-			return emitAxiWaitElapsed(cmd, ra.wait, "no-mistakes axi respond --action approve|fix|skip")
+			return emitAxiWaitElapsed(cmd, ra.wait, "no-mistakes-slim axi respond --action approve|fix|skip")
 		}
 		return emitError(cmd, 1, fmt.Sprintf("get active run: %v", err))
 	}
 	if active.Run == nil {
 		return emitError(cmd, 1, "no active run to respond to",
-			"Run `no-mistakes axi run --intent \"...\"` to start one")
+			"Run `no-mistakes-slim axi run --intent \"...\"` to start one")
 	}
 	runID := active.Run.ID
 
 	run, err := getRunInfo(driveCtx, env.p.Socket(), runID)
 	if err != nil {
 		if isAxiWaitElapsed(ctx, driveCtx, err) {
-			return emitAxiWaitElapsed(cmd, ra.wait, "no-mistakes axi respond --action approve|fix|skip")
+			return emitAxiWaitElapsed(cmd, ra.wait, "no-mistakes-slim axi respond --action approve|fix|skip")
 		}
 		return emitError(cmd, 1, fmt.Sprintf("load run: %v", err))
 	}
@@ -1555,7 +1555,7 @@ func runAxiRespond(cmd *cobra.Command, ra respondArgs) error {
 		gate, ok := rv.awaitingStep()
 		if !ok {
 			return emitError(cmd, 1, "no step is awaiting approval",
-				"Run `no-mistakes axi status` to see the run state")
+				"Run `no-mistakes-slim axi status` to see the run state")
 		}
 		stepName = types.StepName(gate.Name)
 	}
@@ -1572,7 +1572,7 @@ func runAxiRespond(cmd *cobra.Command, ra respondArgs) error {
 	if act == types.ActionFix {
 		if len(findingIDs) == 0 && ra.addFinding == "" && len(ignoreIDs) == 0 {
 			return emitError(cmd, 2, "--action fix requires --findings <id,...>, --ignore <id,...>, or --add-finding <json>",
-				"Run `no-mistakes axi status` to list finding IDs")
+				"Run `no-mistakes-slim axi status` to list finding IDs")
 		}
 		if note := strings.TrimSpace(ra.instructions); note != "" && len(findingIDs) > 0 {
 			instructions = make(map[string]string, len(findingIDs))
@@ -1610,7 +1610,7 @@ func runAxiRespond(cmd *cobra.Command, ra respondArgs) error {
 	// don't immediately observe the same gate we just answered.
 	if err := waitStepLeavesGate(driveCtx, env.p.Socket(), runID, string(stepName), gateIdentityFor(rv, string(stepName))); err != nil {
 		if isAxiWaitElapsed(ctx, driveCtx, err) {
-			return emitAxiWaitElapsed(cmd, ra.wait, "no-mistakes axi run", lead...)
+			return emitAxiWaitElapsed(cmd, ra.wait, "no-mistakes-slim axi run", lead...)
 		}
 		return emitError(cmd, 1, fmt.Sprintf("wait for %s: %v", stepName, err))
 	}
@@ -1618,7 +1618,7 @@ func runAxiRespond(cmd *cobra.Command, ra respondArgs) error {
 	final, ciReady, err := driveRun(driveCtx, cmd.ErrOrStderr(), env.client, env.p.Socket(), runID, ra.autoYes)
 	if err != nil {
 		if isAxiWaitElapsed(ctx, driveCtx, err) {
-			return emitAxiWaitElapsed(cmd, ra.wait, "no-mistakes axi run", lead...)
+			return emitAxiWaitElapsed(cmd, ra.wait, "no-mistakes-slim axi run", lead...)
 		}
 		return emitError(cmd, 1, fmt.Sprintf("drive run: %v", err))
 	}
@@ -1722,7 +1722,7 @@ func runAxiAbort(cmd *cobra.Command, runID string) error {
 		fields = append(fields, branchSyncField(state))
 	}
 	help := []string{
-		"Run `no-mistakes axi sync --check` before any local follow-up commit - a cancelled run can leave unpublished pipeline commits preserved in the local gate, and the check offers the guarded custody recovery",
+		"Run `no-mistakes-slim axi sync --check` before any local follow-up commit - a cancelled run can leave unpublished pipeline commits preserved in the local gate, and the check offers the guarded custody recovery",
 	}
 	if state.Pipeline.RunID == active.Run.ID {
 		switch {
@@ -1828,8 +1828,8 @@ func emitUnconfirmedAbort(cmd *cobra.Command, runID, branch, reason string, last
 		fields = append(fields, runObjectFieldWithKey("run_state", *last))
 	}
 	fields = append(fields, toon.Field{Key: "help", Value: []string{
-		"Run `no-mistakes axi status --run " + runID + "` to observe the run until it reports a terminal status",
-		"Re-run `no-mistakes axi abort` once the daemon is reachable; a repeated abort is an idempotent no-op",
+		"Run `no-mistakes-slim axi status --run " + runID + "` to observe the run until it reports a terminal status",
+		"Re-run `no-mistakes-slim axi abort` once the daemon is reachable; a repeated abort is an idempotent no-op",
 		"Do not treat the branch as released or recoverable until a terminal status is confirmed",
 	}})
 	emitDoc(cmd, fields...)

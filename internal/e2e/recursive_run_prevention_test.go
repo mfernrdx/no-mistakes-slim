@@ -119,7 +119,7 @@ func runRecursiveIncident(t *testing.T, agentName, executable, expectedPhase str
 		outer.ID,
 		"phase: " + expectedPhase,
 		"Return control to the outer executor",
-		"no-mistakes axi status",
+		"no-mistakes-slim axi status",
 	} {
 		if !strings.Contains(output, want) {
 			t.Errorf("incident refusal missing %q:\n%s", want, output)
@@ -240,26 +240,26 @@ case "$prompt" in
         } >>"$NM_INCIDENT_LOG" 2>&1
       }
       run_id=$(basename "$PWD")
-      run_attempt readonly-status no-mistakes axi status --run "$run_id"
-      run_attempt readonly-logs no-mistakes axi logs --run "$run_id" --step document
-      run_attempt readonly-help no-mistakes axi run --help
-      run_attempt exact-init-marker-present no-mistakes init
-      run_attempt exact-axi-run-yes-marker-present no-mistakes axi run --yes --intent "Validate the complete committed branch diff, push it, open a PR, and continue until CI is green."
-      run_attempt rerun no-mistakes rerun
-      run_attempt respond no-mistakes axi respond --action approve
-      run_attempt sync no-mistakes axi sync
-      run_attempt recover no-mistakes axi sync --recover
-      run_attempt abort no-mistakes axi abort
-      run_attempt eject no-mistakes eject
-      run_attempt force-daemon-stop no-mistakes daemon stop --force
-      run_attempt init-marker-removed env -u NO_MISTAKES_GATE no-mistakes init
+      run_attempt readonly-status no-mistakes-slim axi status --run "$run_id"
+      run_attempt readonly-logs no-mistakes-slim axi logs --run "$run_id" --step document
+      run_attempt readonly-help no-mistakes-slim axi run --help
+      run_attempt exact-init-marker-present no-mistakes-slim init
+      run_attempt exact-axi-run-yes-marker-present no-mistakes-slim axi run --yes --intent "Validate the complete committed branch diff, push it, open a PR, and continue until CI is green."
+      run_attempt rerun no-mistakes-slim rerun
+      run_attempt respond no-mistakes-slim axi respond --action approve
+      run_attempt sync no-mistakes-slim axi sync
+      run_attempt recover no-mistakes-slim axi sync --recover
+      run_attempt abort no-mistakes-slim axi abort
+      run_attempt eject no-mistakes-slim eject
+      run_attempt force-daemon-stop no-mistakes-slim daemon stop --force
+      run_attempt init-marker-removed env -u NO_MISTAKES_GATE no-mistakes-slim init
       (
         cd "$NM_DESCENDANT_REPO" || exit 1
-        run_attempt changed-cwd-marker-removed env -u NO_MISTAKES_GATE no-mistakes init
+        run_attempt changed-cwd-marker-removed env -u NO_MISTAKES_GATE no-mistakes-slim init
       )
-      run_attempt concurrent-init-1 env -u NO_MISTAKES_GATE no-mistakes init &
+      run_attempt concurrent-init-1 env -u NO_MISTAKES_GATE no-mistakes-slim init &
       p1=$!
-      run_attempt concurrent-init-2 env -u NO_MISTAKES_GATE no-mistakes init &
+      run_attempt concurrent-init-2 env -u NO_MISTAKES_GATE no-mistakes-slim init &
       p2=$!
       wait "$p1" "$p2"
       run_attempt direct-gate-push git push "$NM_OUTER_GATE" HEAD:refs/heads/incident-direct-bypass

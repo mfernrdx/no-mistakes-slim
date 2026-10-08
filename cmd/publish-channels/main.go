@@ -1,4 +1,4 @@
-// Command publish-channels writes the no-mistakes update channel manifest
+// Command publish-channels writes the no-mistakes-slim update channel manifest
 // (channels.json) and uploads it to a dedicated GitHub prerelease tagged
 // `channels`. The updater reads that asset over the un-rate-limited release
 // download CDN instead of the REST API.
@@ -75,7 +75,7 @@ func ensureChannelsRelease(repo string) error {
 	if err := ghRun("release", "view", channelsTag, "--repo", repo); err == nil {
 		return nil
 	}
-	notes := "Channel index for `no-mistakes update`. Not a product release; the updater reads " + channelsAsset + " from this tag over the GitHub release-asset CDN."
+	notes := "Channel index for `no-mistakes-slim update`. Not a product release; the updater reads " + channelsAsset + " from this tag over the GitHub release-asset CDN."
 	return ghRun(
 		"release", "create", channelsTag,
 		"--repo", repo,

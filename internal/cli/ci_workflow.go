@@ -84,8 +84,8 @@ func newCIWorkflowCmd() *cobra.Command {
 		Short: "Generate .github/workflows/ci.yml from .no-mistakes.yaml commands",
 		Long: "Emits .github/workflows/ci.yml that mirrors the canonical checks pinned in .no-mistakes.yaml.\n" +
 			"The workflow runs on push to the default branch and on all pull requests, registering\n" +
-			"real GitHub checks that the no-mistakes gate's CI step can monitor.\n\n" +
-			"Run this from inside a git repository that has been initialized with 'no-mistakes init'.",
+			"real GitHub checks that the no-mistakes-slim gate's CI step can monitor.\n\n" +
+			"Run this from inside a git repository that has been initialized with 'no-mistakes-slim init'.",
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return trackCommand("ci-workflow", func() error {

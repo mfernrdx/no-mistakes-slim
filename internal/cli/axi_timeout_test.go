@@ -173,10 +173,10 @@ func TestAxiRespond_WaitElapsedAfterSubmissionReattachesWithoutRespondingAgain(t
 	if !responded.Load() {
 		t.Fatal("response was not submitted before the wait elapsed")
 	}
-	if !strings.Contains(out, "Re-run `no-mistakes axi run`") {
+	if !strings.Contains(out, "Re-run `no-mistakes-slim axi run`") {
 		t.Fatalf("post-response timeout did not provide a non-mutating reattach command:\n%s", out)
 	}
-	if strings.Contains(out, "Re-run `no-mistakes axi respond") {
+	if strings.Contains(out, "Re-run `no-mistakes-slim axi respond") {
 		t.Fatalf("post-response timeout instructed the caller to submit another response:\n%s", out)
 	}
 	if elapsed > 6*time.Second {
@@ -574,7 +574,7 @@ func assertWaitElapsed(t *testing.T, err error, out, wantWait string) {
 	for _, want := range []string{
 		"wait of " + wantWait + " elapsed",
 		"not a pipeline failure",
-		"no-mistakes axi status",
+		"no-mistakes-slim axi status",
 		"reattach",
 	} {
 		if !strings.Contains(out, want) {

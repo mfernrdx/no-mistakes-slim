@@ -197,7 +197,7 @@ func printNoActiveRun(w io.Writer, d *db.DB, repoID string) {
 				fmt.Fprintf(w, "  %-12s %-20s %s  %s%s\n", runStatusStyle(r.Status), r.Branch, sDim.Render(sha), sDim.Render(age), pr)
 			}
 			if len(runs) > recentRunsLimit {
-				fmt.Fprintf(w, "  %s\n", sDim.Render(fmt.Sprintf("(%d more - run 'no-mistakes runs' to see all)", len(runs)-recentRunsLimit)))
+				fmt.Fprintf(w, "  %s\n", sDim.Render(fmt.Sprintf("(%d more - run 'no-mistakes-slim runs' to see all)", len(runs)-recentRunsLimit)))
 			}
 			fmt.Fprintln(w)
 			fmt.Fprintf(w, "  %s\n", sDim.Render("Start a new pipeline:"))

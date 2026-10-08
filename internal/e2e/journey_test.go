@@ -24,7 +24,7 @@ import (
 // TestUserJourney is the consolidated end-to-end test. It walks through
 // the full pipeline once per agent, exercising:
 //
-//   - `no-mistakes init` (gate setup, daemon bootstrap, post-receive
+//   - `no-mistakes-slim init` (gate setup, daemon bootstrap, post-receive
 //     hook installation)
 //   - `git push no-mistakes <branch>` (real git transport, hook fires,
 //     daemon receives push notification)
@@ -170,7 +170,7 @@ func runHappyPath(t *testing.T, agentName string) {
 		t.Fatalf("init worktree branch changed before init")
 	}
 
-	// `no-mistakes init` sets up the gate and starts the daemon.
+	// `no-mistakes-slim init` sets up the gate and starts the daemon.
 	out, err := h.RunInDir(initWorktree, "init")
 	if err != nil {
 		t.Fatalf("nm init from worktree: %v\n%s", err, out)
@@ -615,7 +615,7 @@ func assertRootVersion(t *testing.T, h *Harness) {
 	if err != nil {
 		t.Fatalf("nm --version: %v\n%s", err, out)
 	}
-	if !strings.HasPrefix(out, "no-mistakes version ") {
+	if !strings.HasPrefix(out, "no-mistakes-slim version ") {
 		t.Errorf("version output should include command name and version prefix, got %q", out)
 	}
 	if !strings.Contains(out, "(unknown) unknown") {
@@ -2530,7 +2530,7 @@ func assertRootDefaultsToHistory(t *testing.T, h *Harness) {
 	if strings.Contains(out, "oldest/skipped") {
 		t.Fatalf("oldest root history run should be omitted once recent-runs limit is hit, got:\n%s", out)
 	}
-	if !strings.Contains(out, "more - run 'no-mistakes runs' to see all") {
+	if !strings.Contains(out, "more - run 'no-mistakes-slim runs' to see all") {
 		t.Fatalf("expected root history overflow hint, got:\n%s", out)
 	}
 }

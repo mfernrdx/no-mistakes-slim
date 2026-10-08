@@ -546,8 +546,8 @@ func (rv runView) automaticSkips() []automaticSkipRow {
 // table, and the next-step commands an agent can run to clear it.
 func gateFields(gate stepView) []toon.Field {
 	help := []string{
-		"Run `no-mistakes axi respond --action approve` to accept this step and continue",
-		"Run `no-mistakes axi respond --action fix --findings <ids> [--ignore <ids>]` to have the pipeline fix the selected findings (do not edit files yourself); list every finding below in `--findings` or `--ignore`, unless an earlier round of this step already decided it, and a finding that round chose to fix cannot be declined by a later response",
+		"Run `no-mistakes-slim axi respond --action approve` to accept this step and continue",
+		"Run `no-mistakes-slim axi respond --action fix --findings <ids> [--ignore <ids>]` to have the pipeline fix the selected findings (do not edit files yourself); list every finding below in `--findings` or `--ignore`, unless an earlier round of this step already decided it, and a finding that round chose to fix cannot be declined by a later response",
 	}
 	// A review parked in waiting-on-answers is not asking for a verdict: its
 	// reviewer asked questions and cannot finish without them. Approving or
@@ -558,21 +558,21 @@ func gateFields(gate stepView) []toon.Field {
 	// options the reviewer stated.
 	if pipeline.HasUnansweredReviewQuestion(gate.FindingsJSON) {
 		help = append([]string{
-			"This review is waiting on answers to the question(s) its reviewer asked; each is a `question-<id>` finding below. Answer each with `no-mistakes axi answer --question <id> --answer \"<one of its options>\"` and the same reviewer resumes and finishes its pass; the answer that closes the last one blocks like `axi respond` and returns the next gate or outcome",
+			"This review is waiting on answers to the question(s) its reviewer asked; each is a `question-<id>` finding below. Answer each with `no-mistakes-slim axi answer --question <id> --answer \"<one of its options>\"` and the same reviewer resumes and finishes its pass; the answer that closes the last one blocks like `axi respond` and returns the next gate or outcome",
 			"Do not approve or fix to get past a review question: that throws away the paused review pass instead of answering it",
 		}, help...)
 	}
 	if pipeline.HasProtectedPathRefusal(gate.FindingsJSON) {
 		help = []string{
 			"Protected-path refusals require an explicit operator response; Approve is rejected.",
-			"Have the operator inspect and resolve the reported protected-path edit through the repository's authorized workflow, then run `no-mistakes axi respond --action fix` to retry the refused step, including its commit and publication.",
+			"Have the operator inspect and resolve the reported protected-path edit through the repository's authorized workflow, then run `no-mistakes-slim axi respond --action fix` to retry the refused step, including its commit and publication.",
 		}
 	}
-	skip := "Run `no-mistakes axi respond --action skip` to skip this step"
+	skip := "Run `no-mistakes-slim axi respond --action skip` to skip this step"
 	if pipeline.HasUnvalidatedWorkRefusal(gate.FindingsJSON) {
 		help = []string{
 			"Approve is rejected: the run worktree holds work a timed-out Test agent left that no Test turn validated, and approval would publish it. The findings name that work and how to inspect it.",
-			"Run `no-mistakes axi respond --action fix --findings <ids>` to validate that work (do not edit files yourself), or `no-mistakes axi abort` to stop the run",
+			"Run `no-mistakes-slim axi respond --action fix --findings <ids>` to validate that work (do not edit files yourself), or `no-mistakes-slim axi abort` to stop the run",
 		}
 		skip = "Do not skip this step: the steps after Test would commit and publish the unvalidated work, so skipping needs the operator's explicit decision"
 	}
@@ -662,9 +662,9 @@ func recordedFindingsFields(findingsJSON string, full bool) ([]toon.Field, bool)
 
 func axiLogsFullCommand(step, runID string) string {
 	if runID != "" {
-		return fmt.Sprintf("no-mistakes axi logs --run %s --step %s --full", runID, step)
+		return fmt.Sprintf("no-mistakes-slim axi logs --run %s --step %s --full", runID, step)
 	}
-	return fmt.Sprintf("no-mistakes axi logs --step %s --full", step)
+	return fmt.Sprintf("no-mistakes-slim axi logs --step %s --full", step)
 }
 
 // truncate shortens s to limit runes, appending a disclosure of the full size

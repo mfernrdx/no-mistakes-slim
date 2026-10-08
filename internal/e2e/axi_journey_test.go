@@ -75,7 +75,7 @@ func axiScenario(t *testing.T) string {
 }
 
 // TestAxiAgentJourney proves an autonomous agent can drive a full no-mistakes
-// pipeline headlessly through the `no-mistakes axi` surface in an isolated
+// pipeline headlessly through the `no-mistakes-slim axi` surface in an isolated
 // dummy environment: init installs the skill, the home view reports state,
 // `axi run` blocks at an approval gate and emits TOON, `axi respond` clears it
 // and runs to completion, and `axi status`/`logs` inspect the result. It also
@@ -166,7 +166,7 @@ func TestAxiBranchSyncJourney(t *testing.T) {
 	if err != nil {
 		t.Fatalf("approve fix review: %v\n%s", err, doneOut)
 	}
-	for _, want := range []string{"outcome: passed", "branch_sync:", "state: behind", "command: no-mistakes axi sync"} {
+	for _, want := range []string{"outcome: passed", "branch_sync:", "state: behind", "command: no-mistakes-slim axi sync"} {
 		if !strings.Contains(doneOut, want) {
 			t.Errorf("post-push output missing %q:\n%s", want, doneOut)
 		}
@@ -322,7 +322,7 @@ func TestAxiRunReattachesAfterManagedFix(t *testing.T) {
 		"status: running",
 		"safety: blocked_pipeline_owned",
 		"code: continue_active_run",
-		"command: no-mistakes axi status",
+		"command: no-mistakes-slim axi status",
 	} {
 		if !strings.Contains(blockedOut, want) {
 			t.Errorf("pipeline-owned fresh run missing %q:\n%s", want, blockedOut)
@@ -386,7 +386,7 @@ func TestAxiCustodyRecoveryJourney(t *testing.T) {
 		"status: cancelled",
 		"safety: blocked_pipeline_owned_recoverable",
 		"code: recover_custody",
-		"command: no-mistakes axi sync --recover",
+		"command: no-mistakes-slim axi sync --recover",
 	} {
 		if !strings.Contains(abortOut, want) {
 			t.Errorf("abort output missing %q:\n%s", want, abortOut)
@@ -423,7 +423,7 @@ func TestAxiCustodyRecoveryJourney(t *testing.T) {
 		"status: cancelled",
 		"safety: blocked_pipeline_owned_recoverable",
 		"code: recover_custody",
-		"command: no-mistakes axi sync --recover",
+		"command: no-mistakes-slim axi sync --recover",
 	} {
 		if !strings.Contains(blockedOut, want) {
 			t.Errorf("blocked fresh run missing %q:\n%s", want, blockedOut)
@@ -454,8 +454,8 @@ func TestAxiCustodyRecoveryJourney(t *testing.T) {
 		"status: cancelled",
 		"safety: blocked_pipeline_owned_recoverable",
 		"code: recover_custody",
-		"command: no-mistakes axi sync --recover",
-		"no-mistakes rerun",
+		"command: no-mistakes-slim axi sync --recover",
+		"no-mistakes-slim rerun",
 	} {
 		if !strings.Contains(checkOut, want) {
 			t.Errorf("stranded check missing %q:\n%s", want, checkOut)
@@ -467,7 +467,7 @@ func TestAxiCustodyRecoveryJourney(t *testing.T) {
 	if err != nil {
 		t.Fatalf("guarded recovery: %v\n%s", err, recoverOut)
 	}
-	for _, want := range []string{"recovered: true", "state: custody_returned", "changed: true", "no-mistakes axi run --intent"} {
+	for _, want := range []string{"recovered: true", "state: custody_returned", "changed: true", "no-mistakes-slim axi run --intent"} {
 		if !strings.Contains(recoverOut, want) {
 			t.Errorf("recover output missing %q:\n%s", want, recoverOut)
 		}
@@ -738,7 +738,7 @@ func TestAxiCustodyRecoveryAfterRebaseJourney(t *testing.T) {
 	if err != nil {
 		t.Fatalf("rebase-superset recovery escalated instead of returning custody: %v\n%s", err, recoverOut)
 	}
-	for _, want := range []string{"recovered: true", "state: custody_returned", "changed: true", "no-mistakes axi run --intent"} {
+	for _, want := range []string{"recovered: true", "state: custody_returned", "changed: true", "no-mistakes-slim axi run --intent"} {
 		if !strings.Contains(recoverOut, want) {
 			t.Errorf("recover output missing %q:\n%s", want, recoverOut)
 		}
@@ -1081,7 +1081,7 @@ func TestAxiAgentJourney(t *testing.T) {
 		"status: awaiting_approval",
 		"ask-user",
 		"potential nil deref",
-		"no-mistakes axi respond --action approve",
+		"no-mistakes-slim axi respond --action approve",
 	} {
 		if !strings.Contains(gateOut, want) {
 			t.Errorf("axi run gate output missing %q in:\n%s", want, gateOut)
@@ -1415,7 +1415,7 @@ func anyPromptContains(h *Harness, sub string) bool {
 	return false
 }
 
-// assertSkillInstalled verifies init wrote the no-mistakes skill into both
+// assertSkillInstalled verifies init wrote the no-mistakes-slim skill into both
 // user-level agent skill directories (the Claude Code and vendor-neutral
 // conventions under the user's home) with valid frontmatter, and left the
 // repo's working tree untouched by skill files.
@@ -1434,7 +1434,7 @@ func assertSkillInstalled(t *testing.T, h *Harness) {
 		for _, want := range []string{
 			"name: no-mistakes",
 			"user-invocable: true",
-			"no-mistakes axi run",
+			"no-mistakes-slim axi run",
 		} {
 			if !strings.Contains(content, want) {
 				t.Errorf("%s missing %q", rel, want)

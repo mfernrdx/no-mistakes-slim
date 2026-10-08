@@ -26,7 +26,7 @@ var ensureGateHooksPathIsolation = git.EnsureHooksPathIsolation
 var sweepRunWorktrees = procreap.SweepRunWorktrees
 
 // RemoteName is the name of the git remote that points to the local gate.
-const RemoteName = "no-mistakes"
+const RemoteName = "no-mistakes-slim"
 
 // repoID generates a deterministic 12-char hex ID from an absolute path.
 func repoID(absPath string) string {
@@ -34,7 +34,7 @@ func repoID(absPath string) string {
 	return fmt.Sprintf("%x", h[:6])
 }
 
-// Init sets up a no-mistakes gate for the git repo at workDir.
+// Init sets up a no-mistakes-slim gate for the git repo at workDir.
 // It creates a bare repo, installs the post-receive hook, best-effort
 // isolates the bare repo's hooks path from shared local config writes when
 // Git supports config --worktree, adds the no-mistakes remote, and records
@@ -287,7 +287,7 @@ func reattachRelocatedRepo(ctx context.Context, d *db.DB, p *paths.Paths, absRoo
 	return migrated, nil
 }
 
-// Eject removes the no-mistakes gate from the repo at workDir.
+// Eject removes the no-mistakes-slim gate from the repo at workDir.
 // It removes the remote, deletes the bare repo and worktrees,
 // and deletes the repo record from the database.
 func Eject(ctx context.Context, d *db.DB, p *paths.Paths, workDir string) (*db.Repo, error) {

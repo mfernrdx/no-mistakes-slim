@@ -18,7 +18,7 @@ import (
 // TestIntentJourney exercises the full user-intent extraction
 // path end-to-end:
 //
-//   - real `no-mistakes init` + post-receive hook + daemon
+//   - real `no-mistakes-slim init` + post-receive hook + daemon
 //   - a Claude transcript fixture seeded under the daemon's $HOME
 //   - real Claude reader walking that transcript and matching by cwd
 //   - real summarizer prompt sent to the fake agent

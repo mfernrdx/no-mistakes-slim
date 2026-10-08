@@ -199,7 +199,7 @@ func publishRunHead(sctx *pipeline.StepContext, headBeingPushed, localRefUpdate 
 	}
 	// Settle the gate mirror BEFORE recording the publication. The remote
 	// already has the head, but a run is only "published" once the gate mirror
-	// carries it too: `no-mistakes rerun` resolves its starting head from the
+	// carries it too: `no-mistakes-slim rerun` resolves its starting head from the
 	// gate, so a head recorded as published while the gate is behind is a head
 	// a later rerun silently omits.
 	//

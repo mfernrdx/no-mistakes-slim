@@ -1,5 +1,5 @@
 // Package gateguidance owns the shared phase-ownership contract rendered into
-// every validation-step prompt and the installed no-mistakes skill.
+// every validation-step prompt and the installed no-mistakes-slim skill.
 package gateguidance
 
 import "fmt"
@@ -22,8 +22,8 @@ itself. The runtime combines managed Git identity with authenticated process
 ancestry. If a pipeline-control command returns
 ` + "`error.code: nested_gate_context`" + `, stop immediately and
 return control to the outer executor. Safe inspection remains available through
-` + "`no-mistakes axi status`" + `, ` + "`no-mistakes axi logs`" + `, help, and
-` + "`no-mistakes doctor`" + `.
+` + "`no-mistakes-slim axi status`" + `, ` + "`no-mistakes-slim axi logs`" + `, help, and
+` + "`no-mistakes-slim doctor`" + `.
 `
 
 // PromptBoundary is prepended centrally to every concrete agent invocation.
@@ -32,8 +32,8 @@ func PromptBoundary(phase string) string {
 		phase = "current"
 	}
 	return fmt.Sprintf(`Gate-step phase boundary:
-- You are the %s phase inside an already active no-mistakes run. Inspect, fix, and return only this assigned phase.
-- Never invoke no-mistakes init, axi run, rerun, respond, sync, abort, eject, or directly push a gate. Never initialize or control another pipeline.
+- You are the %s phase inside an already active no-mistakes-slim run. Inspect, fix, and return only this assigned phase.
+- Never invoke no-mistakes-slim init, axi run, rerun, respond, sync, abort, eject, or directly push a gate. Never initialize or control another pipeline.
 - Delivery requirements in user intent remain authoritative acceptance context for evaluating this change. Do not personally execute other validation, push, PR, or CI phases; the outer executor alone owns every phase other than this assigned one.
 - When this phase is complete, return its requested structured result to the outer executor.
 

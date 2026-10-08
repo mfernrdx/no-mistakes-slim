@@ -29,7 +29,7 @@ func newInitCmd() *cobra.Command {
 	var worktreeRoot string
 	cmd := &cobra.Command{
 		Use:   "init",
-		Short: "Initialize no-mistakes gate for the current repository",
+		Short: "Initialize no-mistakes-slim gate for the current repository",
 		Long: "Sets up or refreshes a local bare repo as a gate, installs a post-receive hook,\n" +
 			"best-effort isolates the gate hook path from shared local git config writes when Git supports `config --worktree`,\n" +
 			"adds or repairs the \"no-mistakes\" git remote, and records the repo in the database.\n\n" +

@@ -34,7 +34,7 @@ type daemonPIDFile struct {
 // stale PID files.
 //
 // Safety rules:
-//   - If another no-mistakes daemon is still running, skip everything so
+//   - If another no-mistakes-slim daemon is still running, skip everything so
 //     we don't kill that daemon's live servers.
 //   - For each PID file, require the recorded StartedAt to match the
 //     process's actual start time within orphanStartTimeTolerance. If not,

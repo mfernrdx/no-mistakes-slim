@@ -54,7 +54,7 @@ func silentAgentScenario(t *testing.T) string {
 }
 
 // TestSilentAgentTimeoutReportsMeasuredEvidence reproduces the end-user failure
-// through the stock `no-mistakes axi` surface: a pipeline agent that starts and
+// through the stock `no-mistakes-slim axi` surface: a pipeline agent that starts and
 // then emits nothing at all until its invocation budget expires.
 //
 // What the operator used to get was "agent timed out after 30m0s (agent silent

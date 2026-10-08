@@ -38,7 +38,7 @@ func commitTrustedRepoConfig(t *testing.T, h *Harness, extra string) {
 	}
 }
 
-// initFromOwnWorktree runs `no-mistakes init` off a branch of its own so the
+// initFromOwnWorktree runs `no-mistakes-slim init` off a branch of its own so the
 // journey's feature branch is never the one init was standing on.
 func initFromOwnWorktree(t *testing.T, h *Harness, name string) {
 	t.Helper()

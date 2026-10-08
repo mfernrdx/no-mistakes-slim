@@ -52,7 +52,7 @@ var renameDaemonPIDFile = os.Rename
 
 // Run starts the daemon process. It blocks until a shutdown signal is received
 // or the shutdown IPC method is called. This is called via the hidden
-// `no-mistakes daemon run` entrypoint used by managed and detached services.
+// `no-mistakes-slim daemon run` entrypoint used by managed and detached services.
 func Run() (retErr error) {
 	startupStarted := time.Now()
 	p, err := paths.New()

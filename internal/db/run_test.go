@@ -57,7 +57,7 @@ func TestRunInsertAndUpdatePreserveBuildIdentity(t *testing.T) {
 		t.Fatalf("get run: %v", err)
 	}
 	if got.NoMistakesVersion == nil || *got.NoMistakesVersion != buildinfo.CurrentVersion() {
-		t.Fatalf("no-mistakes version = %v, want %q", got.NoMistakesVersion, buildinfo.CurrentVersion())
+		t.Fatalf("no-mistakes-slim version = %v, want %q", got.NoMistakesVersion, buildinfo.CurrentVersion())
 	}
 	if got.NoMistakesBuildSHA == nil || *got.NoMistakesBuildSHA != buildinfo.Commit {
 		t.Fatalf("no-mistakes build SHA = %v, want %q", got.NoMistakesBuildSHA, buildinfo.Commit)

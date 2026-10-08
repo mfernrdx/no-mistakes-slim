@@ -55,7 +55,7 @@ func commandFailureSummary(output, commandLabel string, logStep types.StepName) 
 	tail := strings.ToValidUTF8(output[tailStart:], "?")
 	omitted := tailStart - headEnd
 	marker := fmt.Sprintf(
-		"\n\n[configured %s output truncated: original byte count: %d; omitted byte count: %d; complete output: %s step log (`no-mistakes axi logs --step %s --full`)]\n\n",
+		"\n\n[configured %s output truncated: original byte count: %d; omitted byte count: %d; complete output: %s step log (`no-mistakes-slim axi logs --step %s --full`)]\n\n",
 		commandLabel,
 		len(output),
 		omitted,

@@ -18,7 +18,7 @@ func TestBranchSyncActionRefreshesBeforeConfirmationAndAppliesThroughSharedPath(
 		Local:      branchsync.LocalState{Branch: "feature", Head: strings.Repeat("a", 40), Clean: true},
 		Pipeline:   branchsync.PipelineState{RunID: "run-1", PushedHead: strings.Repeat("b", 40)},
 		Target:     branchsync.TargetState{Kind: "fork", Remote: "fork", Ref: "refs/heads/feature"},
-		NextAction: &branchsync.NextAction{Code: "sync", Command: "no-mistakes axi sync"},
+		NextAction: &branchsync.NextAction{Code: "sync", Command: "no-mistakes-slim axi sync"},
 	}
 	m.branchSync = &cached
 	refreshCalls := 0
@@ -82,7 +82,7 @@ func TestLocalBranchStatusIsCompactAndOnlyOffersEligibleAction(t *testing.T) {
 	if !strings.Contains(view, "diverged") || strings.Contains(view, "u sync branch") {
 		t.Fatalf("diverged view:\n%s", view)
 	}
-	state.NextAction = &branchsync.NextAction{Code: "sync", Command: "no-mistakes axi sync"}
+	state.NextAction = &branchsync.NextAction{Code: "sync", Command: "no-mistakes-slim axi sync"}
 	view = stripANSI(renderLocalBranchStatus(&state, false, 80))
 	if !strings.Contains(view, "equivalent work") || !strings.Contains(view, "u sync branch") {
 		t.Fatalf("equivalent candidate view:\n%s", view)
@@ -101,7 +101,7 @@ func TestBranchSyncActionRefreshesEquivalentDivergedBeforeConfirmation(t *testin
 		Local:      branchsync.LocalState{Branch: "feature", Head: strings.Repeat("a", 40), Clean: true},
 		Pipeline:   branchsync.PipelineState{RunID: "run-1", PushedHead: strings.Repeat("b", 40)},
 		Target:     branchsync.TargetState{Kind: "fork", Remote: "fork", Ref: "refs/heads/feature"},
-		NextAction: &branchsync.NextAction{Code: "sync", Command: "no-mistakes axi sync"},
+		NextAction: &branchsync.NextAction{Code: "sync", Command: "no-mistakes-slim axi sync"},
 	}
 	m.branchSync = &cached
 	refreshCalls := 0
@@ -167,12 +167,12 @@ func TestMissingPreservedHeadStatusShowsKeepLocalRecoveryCommand(t *testing.T) {
 		Safety: "blocked_recover_preserved_head_missing",
 		NextAction: &branchsync.NextAction{
 			Code:    "recover_custody",
-			Command: "no-mistakes axi sync --recover --keep-local",
+			Command: "no-mistakes-slim axi sync --recover --keep-local",
 		},
 	}
 
 	view := stripANSI(renderLocalBranchStatus(&state, false, 80))
-	if !strings.Contains(view, "no-mistakes axi sync --recover --keep-local") {
+	if !strings.Contains(view, "no-mistakes-slim axi sync --recover --keep-local") {
 		t.Fatalf("missing-head status did not show its recovery command:\n%s", view)
 	}
 }
@@ -259,7 +259,7 @@ func TestArchiveRecoveryConfirmationUsesOnlyGuardedKeepLocalAction(t *testing.T)
 			RequiredHead: strings.Repeat("a", 40), PreservedHead: strings.Repeat("c", 40),
 			ArchiveRef: "refs/heads/archive/run-archive", KeepLocal: true, Proof: "verified",
 		},
-		NextAction: &branchsync.NextAction{Code: "recover_custody", Command: "no-mistakes axi sync --recover --keep-local"},
+		NextAction: &branchsync.NextAction{Code: "recover_custody", Command: "no-mistakes-slim axi sync --recover --keep-local"},
 	}
 	m.branchSync = &stranded
 	called := false

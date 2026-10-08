@@ -73,7 +73,7 @@ func TestDaemonStopNamesRetainedLaunchAgentAndUninstallCommand(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, want := range []string{"daemon stopped", "starts again at the next login", file, "no-mistakes daemon uninstall"} {
+	for _, want := range []string{"daemon stopped", "starts again at the next login", file, "no-mistakes-slim daemon uninstall"} {
 		if !strings.Contains(out, want) {
 			t.Fatalf("stop must contain %q: %q", want, out)
 		}

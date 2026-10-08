@@ -240,7 +240,7 @@ func (f *recoverFixture) custodyReturned() bool {
 
 func assertKeepLocalRecoveryOffer(t *testing.T, state State) {
 	t.Helper()
-	if state.NextAction == nil || state.NextAction.Code != "recover_custody" || state.NextAction.Command != "no-mistakes axi sync --recover --keep-local" {
+	if state.NextAction == nil || state.NextAction.Code != "recover_custody" || state.NextAction.Command != "no-mistakes-slim axi sync --recover --keep-local" {
 		t.Fatalf("want keep-local recover_custody, got %#v", state.NextAction)
 	}
 }
@@ -250,7 +250,7 @@ func assertManualReconciliationOffer(t *testing.T, state State) {
 	if state.Safety != "blocked_recover_manual_reconciliation" {
 		t.Fatalf("want manual-reconciliation safety, got %#v", state)
 	}
-	if state.NextAction == nil || state.NextAction.Code != "inspect_and_reconcile_manually" || state.NextAction.Command != "no-mistakes axi status" {
+	if state.NextAction == nil || state.NextAction.Code != "inspect_and_reconcile_manually" || state.NextAction.Command != "no-mistakes-slim axi status" {
 		t.Fatalf("want manual reconciliation guidance, got %#v", state.NextAction)
 	}
 }
@@ -294,7 +294,7 @@ func TestActivePrePushRunStaysBlockedWithoutRecovery(t *testing.T) {
 	if state.State != StatePipelineOwned || state.Safety != "blocked_pipeline_owned" {
 		t.Fatalf("active run state = %#v", state)
 	}
-	if state.NextAction == nil || state.NextAction.Code != "continue_active_run" || state.NextAction.Command != "no-mistakes axi status" {
+	if state.NextAction == nil || state.NextAction.Code != "continue_active_run" || state.NextAction.Command != "no-mistakes-slim axi status" {
 		t.Fatalf("active run next action = %#v", state.NextAction)
 	}
 	if state.Pipeline.Status != "running" {
@@ -568,7 +568,7 @@ func TestBoundArchiveOffersOnlyKeepLocalRecoveryForDivergentLaterHead(t *testing
 	if state.Recovery == nil || state.Recovery.Proof != "verified" || !state.Recovery.KeepLocal || state.Recovery.RequiredHead != f.submitted || state.Recovery.PreservedHead != f.preserved || state.Recovery.ArchiveRef != archiveRef {
 		t.Fatalf("archive recovery evidence = %#v", state.Recovery)
 	}
-	if state.NextAction == nil || state.NextAction.Code != "recover_custody" || state.NextAction.Command != "no-mistakes axi sync --recover --keep-local" {
+	if state.NextAction == nil || state.NextAction.Code != "recover_custody" || state.NextAction.Command != "no-mistakes-slim axi sync --recover --keep-local" {
 		t.Fatalf("archive next action = %#v", state.NextAction)
 	}
 	if got := mustRun(t, f.local, "for-each-ref", "--format=%(refname) %(objectname) %(symref)"); got != beforeLocalRefs {
@@ -579,7 +579,7 @@ func TestBoundArchiveOffersOnlyKeepLocalRecoveryForDivergentLaterHead(t *testing
 	}
 
 	refused := f.service.Recover(f.ctx, false)
-	if refused.Recovered || refused.Changed || refused.Safety != "blocked_recover_archive_requires_keep_local" || refused.NextAction == nil || refused.NextAction.Command != "no-mistakes axi sync --recover --keep-local" {
+	if refused.Recovered || refused.Changed || refused.Safety != "blocked_recover_archive_requires_keep_local" || refused.NextAction == nil || refused.NextAction.Command != "no-mistakes-slim axi sync --recover --keep-local" {
 		t.Fatalf("default archive recovery = %#v", refused)
 	}
 	if got := mustRun(t, f.local, "for-each-ref", "--format=%(refname) %(objectname) %(symref)"); got != beforeLocalRefs {
@@ -1154,7 +1154,7 @@ func TestInspectOffersKeepLocalWhenRecordedHeadIsMissing(t *testing.T) {
 	if state.NextAction == nil || state.NextAction.Code != "recover_custody" {
 		t.Fatalf("missing-head next action = %#v", state.NextAction)
 	}
-	if state.NextAction.Command != "no-mistakes axi sync --recover --keep-local" {
+	if state.NextAction.Command != "no-mistakes-slim axi sync --recover --keep-local" {
 		t.Fatalf("missing-head recovery command = %q", state.NextAction.Command)
 	}
 }
@@ -1239,7 +1239,7 @@ func TestRecoverKeepLocalReleasesAllStrandedTerminalRuns(t *testing.T) {
 	}
 
 	state := f.service.InspectCached(f.ctx)
-	if state.Pipeline.RunID != newest.ID || state.NextAction == nil || state.NextAction.Command != "no-mistakes axi sync --recover --keep-local" {
+	if state.Pipeline.RunID != newest.ID || state.NextAction == nil || state.NextAction.Command != "no-mistakes-slim axi sync --recover --keep-local" {
 		t.Fatalf("stacked missing-head state = %#v", state)
 	}
 	kept := f.service.Recover(f.ctx, true)
@@ -1272,7 +1272,7 @@ func TestRecoverKeepLocalReleasesMixedEvidenceStack(t *testing.T) {
 	}
 
 	state := f.service.InspectCached(f.ctx)
-	if state.Pipeline.RunID != newest.ID || state.NextAction == nil || state.NextAction.Command != "no-mistakes axi sync --recover --keep-local" {
+	if state.Pipeline.RunID != newest.ID || state.NextAction == nil || state.NextAction.Command != "no-mistakes-slim axi sync --recover --keep-local" {
 		t.Fatalf("mixed stack state = %#v", state)
 	}
 	kept := f.service.Recover(f.ctx, true)
@@ -1307,7 +1307,7 @@ func TestRecoverKeepLocalReleasesStackWhenOlderHeadIsMissing(t *testing.T) {
 	}
 
 	state := f.service.InspectCached(f.ctx)
-	if state.Pipeline.RunID != newest.ID || state.NextAction == nil || state.NextAction.Command != "no-mistakes axi sync --recover --keep-local" {
+	if state.Pipeline.RunID != newest.ID || state.NextAction == nil || state.NextAction.Command != "no-mistakes-slim axi sync --recover --keep-local" {
 		t.Fatalf("older missing-head stack state = %#v", state)
 	}
 	kept := f.service.Recover(f.ctx, true)
@@ -1383,7 +1383,7 @@ func TestRecoverKeepLocalIgnoresSupersededUnpublishedRuns(t *testing.T) {
 	}
 
 	state := f.service.InspectCached(f.ctx)
-	if state.Pipeline.RunID != missing.ID || state.NextAction == nil || state.NextAction.Command != "no-mistakes axi sync --recover --keep-local" {
+	if state.Pipeline.RunID != missing.ID || state.NextAction == nil || state.NextAction.Command != "no-mistakes-slim axi sync --recover --keep-local" {
 		t.Fatalf("missing-head state after superseded run = %#v", state)
 	}
 	kept := f.service.Recover(f.ctx, true)
@@ -1785,7 +1785,7 @@ func TestActiveUnmovedRunBlocksAsPipelineOwnedWithoutRecovery(t *testing.T) {
 	if state.State != StatePipelineOwned || state.Safety != "blocked_pipeline_owned" {
 		t.Fatalf("active unmoved state = %s/%s error=%q", state.State, state.Safety, state.Error)
 	}
-	if state.NextAction == nil || state.NextAction.Code != "continue_active_run" || state.NextAction.Command != "no-mistakes axi status" {
+	if state.NextAction == nil || state.NextAction.Code != "continue_active_run" || state.NextAction.Command != "no-mistakes-slim axi status" {
 		t.Fatalf("active unmoved next action = %#v", state.NextAction)
 	}
 	recovered := f.service.Recover(f.ctx, false)

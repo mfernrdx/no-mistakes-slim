@@ -10,7 +10,7 @@ import (
 	"github.com/kunchenguid/no-mistakes/internal/telemetry"
 )
 
-// TestDoctorListsCopilotAgent exercises the user-facing `no-mistakes doctor`
+// TestDoctorListsCopilotAgent exercises the user-facing `no-mistakes-slim doctor`
 // report and verifies the GitHub Copilot CLI now appears in the Agents section
 // and is detected (LookPath) when its binary is on PATH, just like the other
 // first-class agents. The full rendered report is logged so it can be captured
@@ -35,7 +35,7 @@ func TestDoctorListsCopilotAgent(t *testing.T) {
 		t.Fatalf("doctor failed: %v\n%s", err, out)
 	}
 
-	t.Logf("rendered `no-mistakes doctor` report:\n%s", out)
+	t.Logf("rendered `no-mistakes-slim doctor` report:\n%s", out)
 
 	if !strings.Contains(out, "copilot") {
 		t.Fatalf("doctor report missing copilot agent entry:\n%s", out)

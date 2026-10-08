@@ -419,7 +419,7 @@ func TestRerunRefusesDifferentCleanHeadCLI(t *testing.T) {
 			if err == nil {
 				t.Fatalf("CLI accepted differing clean head: %s", output.String())
 			}
-			for _, want := range []string{"refusing rerun", selected, callerHead, "no-mistakes axi status", "no-mistakes axi run"} {
+			for _, want := range []string{"refusing rerun", selected, callerHead, "no-mistakes-slim axi status", "no-mistakes-slim axi run"} {
 				if !strings.Contains(err.Error(), want) || !strings.Contains(output.String(), want) {
 					t.Fatalf("CLI refusal missing %q: err=%v output=%s", want, err, output.String())
 				}

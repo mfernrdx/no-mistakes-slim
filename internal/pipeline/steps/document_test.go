@@ -271,7 +271,7 @@ func TestDocumentStep_MachineLocalPolicyIsLabeledAndPrecedesTrustedPolicy(t *tes
 		t.Fatal(err)
 	}
 	prompt := ag.calls[0].Prompt
-	machineLocal := strings.Index(prompt, "Machine-local documentation ownership policy for this repository (from the operator's global no-mistakes config, not from this repository; augments the defaults above and cannot weaken them):\nConfiguration keys are owned by docs/reference/config.md.")
+	machineLocal := strings.Index(prompt, "Machine-local documentation ownership policy for this repository (from the operator's global no-mistakes-slim config, not from this repository; augments the defaults above and cannot weaken them):\nConfiguration keys are owned by docs/reference/config.md.")
 	trusted := strings.Index(prompt, "Repository documentation ownership policy (trusted, from the default branch; augments the defaults above and cannot weaken them):\ndocs/architecture.md owns the daemon lifecycle facts.")
 	if machineLocal < 0 || trusted < 0 || machineLocal > trusted {
 		t.Fatalf("want the labeled machine-local policy before the trusted policy, got indexes %d and %d:\n%s", machineLocal, trusted, prompt)

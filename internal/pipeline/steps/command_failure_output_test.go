@@ -65,7 +65,7 @@ func TestConfiguredCommandFailureSummaryBoundsHeadTailAndUTF8(t *testing.T) {
 		"TAIL_MARKER 最后的错误🙂",
 		fmt.Sprintf("original byte count: %d", len(output)),
 		"complete output: Test step log",
-		"no-mistakes axi logs --step test --full",
+		"no-mistakes-slim axi logs --step test --full",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("summary missing %q", want)

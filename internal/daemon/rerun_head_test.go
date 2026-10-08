@@ -79,7 +79,7 @@ func TestRerunChecksCallerHeadAgainstSelectedHead(t *testing.T) {
 					if err == nil {
 						t.Fatalf("rerun started %s at selected head %s despite clean caller head %s", result.RunID, selected, callerHead)
 					}
-					for _, want := range []string{selected, callerHead, "no-mistakes axi status", "no-mistakes axi run"} {
+					for _, want := range []string{selected, callerHead, "no-mistakes-slim axi status", "no-mistakes-slim axi run"} {
 						if !strings.Contains(err.Error(), want) {
 							t.Errorf("refusal %q missing %q", err, want)
 						}

@@ -32,7 +32,7 @@ import (
 // ci.go), so an actively-rebased PR keeps its monitor. The value is
 // deliberately long because a green PR can legitimately wait days on a
 // dependency PR or on review; a torn-down or abandoned run is reaped
-// explicitly via `no-mistakes axi abort --run <id>` rather than by a short
+// explicitly via `no-mistakes-slim axi abort --run <id>` rather than by a short
 // timeout.
 const (
 	// DefaultCITimeout is the monitor's idle timeout when ci_timeout is unset.
@@ -509,8 +509,8 @@ const (
 	ReviewPathInstructionsHeading = "Repository review instructions for the changed paths (trusted, from the default branch). Each block below applies only to the files listed under its path, and adds to the requirements above:"
 	// The operator headings name the operator's own config as the source so
 	// the reviewer never reads a machine-local rule as the repository's.
-	ReviewGlobalPathInstructionsHeading     = "Machine-local review instructions for the changed paths (from the operator's global no-mistakes config, applied to every repository; not from this repository). Each block below applies only to the files listed under its path, and adds to the requirements above:"
-	ReviewRepositoryPathInstructionsHeading = "Machine-local review instructions for the changed paths (from the operator's global no-mistakes config, scoped to this repository; not from this repository). Each block below applies only to the files listed under its path, and adds to the requirements above:"
+	ReviewGlobalPathInstructionsHeading     = "Machine-local review instructions for the changed paths (from the operator's global no-mistakes-slim config, applied to every repository; not from this repository). Each block below applies only to the files listed under its path, and adds to the requirements above:"
+	ReviewRepositoryPathInstructionsHeading = "Machine-local review instructions for the changed paths (from the operator's global no-mistakes-slim config, scoped to this repository; not from this repository). Each block below applies only to the files listed under its path, and adds to the requirements above:"
 	ReviewPathInstructionsPathLabel         = "path: "
 	ReviewPathInstructionsFilesLabel        = "matched files: "
 	ReviewPathInstructionsRulesLabel        = "instructions:"
@@ -940,7 +940,7 @@ type Review struct {
 	// Conversation is true when the reviewer may ask the operator questions
 	// mid-pass. It gates the whole protocol: the prompt section, the
 	// conversation files, the question findings that park the gate, the
-	// reviewer session a finalize turn resumes, and `no-mistakes axi answer`.
+	// reviewer session a finalize turn resumes, and `no-mistakes-slim axi answer`.
 	Conversation     bool
 	PathInstructions []PathInstruction
 	// GlobalPathInstructions come from the global config's review block.
@@ -1350,7 +1350,7 @@ forgejo_axi_path: forgejo-axi
 # advances; each base advance re-arms this timer, so an actively-updated green PR
 # keeps its monitor. Set to "unlimited", "none", "off", "never", or any
 # non-positive duration to monitor until the PR is merged, closed, or the run is
-# aborted with: no-mistakes axi abort --run <id>
+# aborted with: no-mistakes-slim axi abort --run <id>
 ci_timeout: "168h"
 
 # AXI status marks a running/fixing step as quiet when no step log or native
@@ -1457,7 +1457,7 @@ log_level: info
 # directory-scoped toolchain configuration. Point a checkout at a directory of
 # your own and its runs are created there instead, one directory per run, so
 # mise/direnv settings on that directory reach every run. Keys are the checkout
-# paths you ran "no-mistakes init" in, values must be absolute directories.
+# paths you ran "no-mistakes-slim init" in, values must be absolute directories.
 # Only the directories no-mistakes' own run records name are ever created,
 # cleaned up, or removed there; everything else, including a directory that
 # merely looks like a run worktree, is left alone. Each checkout needs its own

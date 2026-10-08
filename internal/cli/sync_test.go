@@ -164,7 +164,7 @@ func TestAxiSyncCheckAndApplyReturnFullStructuredState(t *testing.T) {
 	if err != nil {
 		t.Fatalf("check: %v\n%s", err, out)
 	}
-	for _, want := range []string{"branch_sync:", "state: behind", "safety: safe_fast_forward", "freshness: live", f.old, f.pushed, "refs/heads/feature/sync", "command: no-mistakes axi sync"} {
+	for _, want := range []string{"branch_sync:", "state: behind", "safety: safe_fast_forward", "freshness: live", f.old, f.pushed, "refs/heads/feature/sync", "command: no-mistakes-slim axi sync"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("check missing %q:\n%s", want, out)
 		}
@@ -198,7 +198,7 @@ func TestAxiSyncEquivalentDivergedCheckAndApply(t *testing.T) {
 	if err != nil {
 		t.Fatalf("check: %v\n%s", err, out)
 	}
-	for _, want := range []string{"state: diverged", "safety: safe_equivalent_advance", "relation: diverged", "command: no-mistakes axi sync"} {
+	for _, want := range []string{"state: diverged", "safety: safe_equivalent_advance", "relation: diverged", "command: no-mistakes-slim axi sync"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("check missing %q:\n%s", want, out)
 		}
@@ -1060,14 +1060,14 @@ func TestAxiSyncCheckSurfacesRecoveryForTerminalPrePushRun(t *testing.T) {
 		"status: cancelled",
 		"safety: blocked_pipeline_owned_recoverable",
 		"code: recover_custody",
-		"command: no-mistakes axi sync --recover",
-		"no-mistakes rerun",
+		"command: no-mistakes-slim axi sync --recover",
+		"no-mistakes-slim rerun",
 	}, canonicalRerunRecoveryPhrases...) {
 		if !strings.Contains(out, want) {
 			t.Errorf("stranded check missing %q:\n%s", want, out)
 		}
 	}
-	for _, forbidden := range []string{"source: bound_archive", "command: no-mistakes axi sync --recover --keep-local"} {
+	for _, forbidden := range []string{"source: bound_archive", "command: no-mistakes-slim axi sync --recover --keep-local"} {
 		if strings.Contains(out, forbidden) {
 			t.Errorf("ordinary preserved-head path unexpectedly contains %q:\n%s", forbidden, out)
 		}
@@ -1107,7 +1107,7 @@ func TestAxiSyncRecoversRemoteRewrittenBindingEndToEnd(t *testing.T) {
 	if err == nil || !asExitError(err, &ee) || ee.code != 1 {
 		t.Fatalf("rewritten check should exit 1, got %#v\n%s", err, out)
 	}
-	for _, want := range []string{"state: remote_rewritten", "safety: blocked_remote_rewritten", "code: recover_remote_rewritten", "command: no-mistakes axi sync --recover"} {
+	for _, want := range []string{"state: remote_rewritten", "safety: blocked_remote_rewritten", "code: recover_remote_rewritten", "command: no-mistakes-slim axi sync --recover"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("rewritten check missing %q:\n%s", want, out)
 		}
@@ -1179,7 +1179,7 @@ func TestAxiSyncRecoverReturnsCustodyEndToEnd(t *testing.T) {
 	if err != nil {
 		t.Fatalf("recover: %v\n%s", err, out)
 	}
-	for _, want := range []string{"recovered: true", "state: custody_returned", "changed: true", "relation: equal", "no-mistakes axi run --intent"} {
+	for _, want := range []string{"recovered: true", "state: custody_returned", "changed: true", "relation: equal", "no-mistakes-slim axi run --intent"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("recover output missing %q:\n%s", want, out)
 		}
@@ -1257,7 +1257,7 @@ func TestAxiSyncAdoptPublishedRebasedLane(t *testing.T) {
 		"state: custody_returned",
 		"relation: diverged",
 		"code: adopt_published",
-		"command: no-mistakes axi sync --adopt-published",
+		"command: no-mistakes-slim axi sync --adopt-published",
 	} {
 		if !strings.Contains(status, want) {
 			t.Errorf("rebased status missing %q:\n%s", want, status)
@@ -1406,7 +1406,7 @@ func TestAxiArchiveBackedRecoveryKeepsExactRequiredHeadAndBothHistories(t *testi
 			t.Errorf("initial status missing %q:\n%s", want, status)
 		}
 	}
-	if strings.Contains(status, "command: no-mistakes axi sync --recover --keep-local") {
+	if strings.Contains(status, "command: no-mistakes-slim axi sync --recover --keep-local") {
 		t.Fatalf("unbound archive was trusted:\n%s", status)
 	}
 	if after := cliRecoveryGitSnapshot(t, f); after != beforeDetection {
@@ -1429,13 +1429,13 @@ func TestAxiArchiveBackedRecoveryKeepsExactRequiredHeadAndBothHistories(t *testi
 		"keep_local: true",
 		"proof: verified",
 		"code: recover_custody",
-		"command: no-mistakes axi sync --recover --keep-local",
+		"command: no-mistakes-slim axi sync --recover --keep-local",
 	} {
 		if !strings.Contains(bound, want) {
 			t.Errorf("bound state missing %q:\n%s", want, bound)
 		}
 	}
-	if strings.Contains(bound, "no-mistakes rerun") {
+	if strings.Contains(bound, "no-mistakes-slim rerun") {
 		t.Fatalf("archive plan offered a second action instead of exact custody restoration:\n%s", bound)
 	}
 	if after := cliRecoveryGitSnapshot(t, f); after != beforeBind {
@@ -1472,7 +1472,7 @@ func TestAxiArchiveBackedRecoveryKeepsExactRequiredHeadAndBothHistories(t *testi
 	if err == nil || !asExitError(err, &ee) || ee.code != 1 {
 		t.Fatalf("default recovery should refuse, got %#v\n%s", err, refused)
 	}
-	for _, want := range []string{"safety: blocked_recover_archive_requires_keep_local", "code: recover_custody", "command: no-mistakes axi sync --recover --keep-local"} {
+	for _, want := range []string{"safety: blocked_recover_archive_requires_keep_local", "code: recover_custody", "command: no-mistakes-slim axi sync --recover --keep-local"} {
 		if !strings.Contains(refused, want) {
 			t.Errorf("default recovery refusal missing %q:\n%s", want, refused)
 		}
@@ -1622,7 +1622,7 @@ func TestAxiStatusOffersKeepLocalWhenPreservedHeadIsMissing(t *testing.T) {
 		"state: pipeline_owned",
 		"safety: blocked_recover_preserved_head_missing",
 		"code: recover_custody",
-		"command: no-mistakes axi sync --recover --keep-local",
+		"command: no-mistakes-slim axi sync --recover --keep-local",
 	} {
 		if !strings.Contains(out, want) {
 			t.Errorf("missing-head status missing %q:\n%s", want, out)
@@ -1636,7 +1636,7 @@ func TestAxiStatusOffersKeepLocalWhenPreservedHeadIsMissing(t *testing.T) {
 	if err == nil || !asExitError(err, &ee) || ee.code != 1 {
 		t.Fatalf("missing-head check should exit 1, got %#v\n%s", err, check)
 	}
-	if !strings.Contains(check, "command: no-mistakes axi sync --recover --keep-local") {
+	if !strings.Contains(check, "command: no-mistakes-slim axi sync --recover --keep-local") {
 		t.Fatalf("missing-head check did not offer keep-local:\n%s", check)
 	}
 
@@ -1678,7 +1678,7 @@ func TestAxiSyncRecoverKeepLocalReturnsCustodyWhenPreservedHeadIsMissing(t *test
 	if err != nil {
 		t.Fatalf("post-recover axi status: %v\n%s", err, status)
 	}
-	if !strings.Contains(status, "state: custody_returned") || !strings.Contains(status, "no-mistakes axi run --intent") {
+	if !strings.Contains(status, "state: custody_returned") || !strings.Contains(status, "no-mistakes-slim axi run --intent") {
 		t.Fatalf("post-recover status should unblock axi run:\n%s", status)
 	}
 	check, err := executeCmd("axi", "sync", "--check")
